@@ -23,7 +23,10 @@ namespace DewCore.AspNetCore.Middlewares
             var options = context.HttpContext.GetDewBadgeOptions();
             var badge = new DewBadge().DecodeSign(sign, options.Secret);
             if (sign == null || options == null)
+            {
                 context.HttpContext.Response.Redirect(options.RedirectOnError);
+                return;
+            }
             if (_type != null && _claims == null)
             {
                 if (!badge.AuthType(_type))

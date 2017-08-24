@@ -14,8 +14,8 @@ namespace DewCore.AspNetCore.Middlewares
     /// </summary>
     public class DewBadgeOptions
     {
-        public string RedirectNotAuthorized { get; set; } = "errors/notauth";
-        public string RedirectOnError { get; set; } = "errors/error";
+        public string RedirectNotAuthorized { get; set; } = "/errors/notauth";
+        public string RedirectOnError { get; set; } = "/errors/error";
         public string Secret { get; set; } = "carriagenostop";
 
     }
@@ -103,7 +103,7 @@ namespace DewCore.AspNetCore.Middlewares
             {
                 foreach (var item in claims.Split(','))
                 {
-                    if (Claims.ContainsKey(item))
+                    if (Claims.FirstOrDefault(x => x == item) != default(string))
                     {
                         result = true;
                         break;
@@ -111,7 +111,7 @@ namespace DewCore.AspNetCore.Middlewares
                 }
             }
             else
-                result = Claims.ContainsKey(claims);
+                result = Claims.FirstOrDefault(x => x == claims) != default(string);
             return result;
         }
         /// <summary>
@@ -141,10 +141,14 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public IDewBadge DecodeSign(string sign, string secret)
         {
-            var secretKey = Encoding.ASCII.GetBytes(secret);
-            string myToken = JWT.Decode(sign, secretKey, HashSign);
-            DewBadge jt = Newtonsoft.Json.JsonConvert.DeserializeObject<DewBadge>(myToken);
-            return jt;
+            if (sign != null)
+            {
+                var secretKey = Encoding.ASCII.GetBytes(secret);
+                string myToken = JWT.Decode(sign, secretKey, HashSign);
+                DewBadge jt = Newtonsoft.Json.JsonConvert.DeserializeObject<DewBadge>(myToken);
+                return jt;
+            }
+            return null;
         }
         /// <summary>
         /// Check if the badge type match
@@ -168,7 +172,7 @@ namespace DewCore.AspNetCore.Middlewares
     /// <summary>
     /// Badge claims class
     /// </summary>
-    public class BadgeClaims : Dictionary<string, string>
+    public class BadgeClaims : List<string>
     {
 
     }
@@ -187,9 +191,12 @@ namespace DewCore.AspNetCore.Middlewares
             string result = null;
             var options = context.GetDewBadgeOptions();
             var opt = options as DewBadgeOptionsCookies;
-            var header = context.Request.Cookies.FirstOrDefault(x => { return x.Key == opt.CookieName; });
-            if (!header.Equals(default(KeyValuePair<string, Microsoft.Extensions.Primitives.StringValues>)))
-                result = header.Value;
+            if (opt != null)
+            {
+                var header = context.Request.Cookies.FirstOrDefault(x => { return x.Key == opt.CookieName; });
+                if (!header.Equals(default(KeyValuePair<string, Microsoft.Extensions.Primitives.StringValues>)))
+                    result = header.Value;
+            }
             return result;
         }
         /// <summary>
