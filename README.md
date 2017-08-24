@@ -178,8 +178,7 @@ __NOTE:__ In the middleware (in startup class) and whe you call SignIn/Out metho
 
 ## Note 
 ## NuGet
-You can find it on nuget with the name [DewBadgeMiddleware] //soon the link
-
+You can find it on nuget with the name [DewBadgeMiddleware](https://www.nuget.org/packages/DewBadgeMiddleware)
 ## About
 [Andrea Vincenzo Abbondanza](http://www.andrewdev.eu)
 
