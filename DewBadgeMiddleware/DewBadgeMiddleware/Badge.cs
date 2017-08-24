@@ -30,6 +30,8 @@ namespace DewCore.AspNetCore.Middlewares
         public string HeaderName { get; set; } = "Authorization";
         public string Bearer { get; set; } = "bearer ";
     }
+
+
     /// <summary>
     /// Badge class
     /// </summary>
@@ -51,7 +53,7 @@ namespace DewCore.AspNetCore.Middlewares
             set { _claims = value; }
         }
 
-        private long _idUser;
+        private long _idUser = 0;
         /// <summary>
         /// User ID
         /// </summary>
@@ -61,7 +63,7 @@ namespace DewCore.AspNetCore.Middlewares
             set { _idUser = value; }
         }
 
-        private DateTime _created;
+        private DateTime _created = DateTime.Now;
         /// <summary>
         /// Created date
         /// </summary>
@@ -81,7 +83,7 @@ namespace DewCore.AspNetCore.Middlewares
             set { _expired = value; }
         }
 
-        private DateTime _updated;
+        private DateTime _updated = DateTime.Now;
         /// <summary>
         /// Expired date
         /// </summary>
@@ -139,7 +141,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="sign"></param>
         /// <param name="secret"></param>
         /// <returns></returns>
-        public IDewBadge DecodeSign(string sign, string secret)
+        public DewBadge DecodeSign(string sign, string secret)
         {
             if (sign != null)
             {
@@ -206,7 +208,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// <param name="badge"></param>
         /// <returns></returns>
-        public bool SignIn<T>(HttpContext context, T options, IDewBadge badge) where T : DewBadgeOptions
+        public bool SignIn<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions
         {
             var opt = options as DewBadgeOptionsCookies;
             context.Response.Cookies.Append(opt.CookieName, badge.GetSign(opt.Secret), new CookieOptions() { Expires = opt.CookieExpiring });
@@ -219,7 +221,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// <param name="badge"></param>
         /// <returns></returns>
-        public bool SignOut<T>(HttpContext context, T options, IDewBadge badge) where T : DewBadgeOptions
+        public bool SignOut<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions
         {
             var opt = options as DewBadgeOptionsCookies;
             context.Response.Cookies.Delete(opt.CookieName);
@@ -257,7 +259,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// <param name="badge"></param>
         /// <returns></returns>
-        public bool SignIn<T>(HttpContext context, T options, IDewBadge badge) where T : DewBadgeOptions
+        public bool SignIn<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions
         {
             var opt = options as DewBadgeOptionsJWT;
             context.Response.Headers.Add(opt.HeaderName, opt.Bearer + badge.GetSign(options.Secret));
@@ -270,7 +272,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// <param name="badge"></param>
         /// <returns></returns>
-        public bool SignOut<T>(HttpContext context, T options, IDewBadge badge) where T : DewBadgeOptions
+        public bool SignOut<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions
         {
             return true;
         }

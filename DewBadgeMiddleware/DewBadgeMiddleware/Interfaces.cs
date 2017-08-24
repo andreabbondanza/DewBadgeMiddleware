@@ -34,7 +34,7 @@ namespace DewCore.Abstract.AspNetCore.Middlewares
         /// <param name="sign"></param>
         /// <param name="secret"></param>
         /// <returns></returns>
-        IDewBadge DecodeSign(string sign, string secret);
+        DewBadge DecodeSign(string sign, string secret);
         /// <summary>
         /// Check if the badge type match
         /// </summary>
@@ -61,7 +61,7 @@ namespace DewCore.Abstract.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// <param name="badge"></param>
         /// <returns></returns>
-        bool SignIn<T>(HttpContext context, T options, IDewBadge badge) where T : DewBadgeOptions;
+        bool SignIn<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions;
         /// <summary>
         /// Sign out
         /// </summary>
@@ -70,6 +70,6 @@ namespace DewCore.Abstract.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// <param name="badge"></param>
         /// <returns></returns>
-        bool SignOut<T>(HttpContext context, T options, IDewBadge badge) where T : DewBadgeOptions;
+        bool SignOut<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions;
     }
 }

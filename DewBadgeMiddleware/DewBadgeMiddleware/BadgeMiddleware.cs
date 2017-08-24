@@ -43,7 +43,7 @@ namespace DewCore.AspNetCore.Middlewares
             }
             context.Items.Add("DewBadgeOptions", _bo);
             string sign = _signReader.GetSign(context);
-            context.Items.Add("DewBadgeSign", sign); 
+            context.Items.Add("DewBadgeSign", sign);
             return _next(context);
         }
     }
@@ -69,10 +69,12 @@ namespace DewCore.AspNetCore.Middlewares
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static IDewBadge GetDewBadge<T>(this HttpContext context) where T : class, IDewBadge, new()
+        public static DewBadge GetDewBadge<T>(this HttpContext context) where T : DewBadge, new()
         {
             var data = context.Items.FirstOrDefault(x => x.Key as string == "DewBadgeSign");
-            return data.Equals(default(KeyValuePair<object, object>)) ? null : Newtonsoft.Json.JsonConvert.DeserializeObject<T>(data.Value as string);
+            var badge = new T();
+            var options = context.GetDewBadgeOptions();
+            return data.Equals(default(KeyValuePair<object, object>)) ? null : badge.DecodeSign(data.Value as string, options.Secret) as T;
         }
 
         /// <summary>
@@ -135,13 +137,14 @@ namespace DewCore.AspNetCore.Middlewares
         /// Builder method
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="bo"></param>
+        /// <param name="bo">Badge options</param>
         /// <param name="tp"></param>
         /// <returns></returns>
         public static IApplicationBuilder UseBadgeMiddleware<T>(
-           this IApplicationBuilder builder, DewBadgeOptions bo) where T : class, IDewBadgeSigner, new()
+           this IApplicationBuilder builder, DewBadgeOptions bo = null) where T : class, IDewBadgeSigner, new()
         {
             T signer = new T();
+            bo = bo == null ? new DewBadgeOptions() : bo;
             return builder.UseMiddleware<DewBadgeMiddleware>(bo, signer);
         }
     }

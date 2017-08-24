@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DewCore.Abstract.AspNetCore.Middlewares;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
@@ -21,38 +22,45 @@ namespace DewCore.AspNetCore.Middlewares
             base.OnActionExecuting(context);
             var sign = context.HttpContext.GetDewBadgeSign();
             var options = context.HttpContext.GetDewBadgeOptions();
-            var badge = new DewBadge().DecodeSign(sign, options.Secret);
-            if (sign == null || options == null)
+            var badge = context.HttpContext.GetDewBadge<DewBadge>();
+            if (sign == null)
             {
                 context.HttpContext.Response.Redirect(options.RedirectOnError);
                 return;
             }
-            if (_type != null && _claims == null)
+            if (!badge.IsExpired())
             {
-                if (!badge.AuthType(_type))
+                if (_type != null && _claims == null)
                 {
-                    context.HttpContext.Response.Redirect(options.RedirectNotAuthorized);
-                }
-            }
-            else
-            {
-                if (_type != null && _claims != null)
-                {
-                    if (!badge.AuthType(_type) || !badge.HasClaims(_claims))
+                    if (!badge.AuthType(_type))
                     {
                         context.HttpContext.Response.Redirect(options.RedirectNotAuthorized);
                     }
                 }
                 else
                 {
-                    if (_type == null && _claims != null)
+                    if (_type != null && _claims != null)
                     {
-                        if (!badge.HasClaims(_claims))
+                        if (!badge.AuthType(_type) || !badge.HasClaims(_claims))
                         {
                             context.HttpContext.Response.Redirect(options.RedirectNotAuthorized);
                         }
                     }
+                    else
+                    {
+                        if (_type == null && _claims != null)
+                        {
+                            if (!badge.HasClaims(_claims))
+                            {
+                                context.HttpContext.Response.Redirect(options.RedirectNotAuthorized);
+                            }
+                        }
+                    }
                 }
+            }
+            else
+            {
+                context.HttpContext.Response.Redirect(options.RedirectNotAuthorized);
             }
         }
         readonly string _type = null;
