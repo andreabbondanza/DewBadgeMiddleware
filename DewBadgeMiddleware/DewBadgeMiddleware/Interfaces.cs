@@ -6,25 +6,70 @@ using System.Text;
 
 namespace DewCore.Abstract.AspNetCore.Middlewares
 {
+    /// <summary>
+    /// IDewBadge interface
+    /// </summary>
     public interface IDewBadge
     {
+        /// <summary>
+        /// Return true if the badge contains a claim
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         bool HasClaims(string key);
-
+        /// <summary>
+        /// Return true if badge is expired
+        /// </summary>
+        /// <returns></returns>
         bool IsExpired();
-
+        /// <summary>
+        /// Return the badge sign
+        /// </summary>
+        /// <param name="secret"></param>
+        /// <returns></returns>
         string GetSign(string secret);
-
+        /// <summary>
+        /// Generate a badge from a sign
+        /// </summary>
+        /// <param name="sign"></param>
+        /// <param name="secret"></param>
+        /// <returns></returns>
         IDewBadge DecodeSign(string sign, string secret);
+        /// <summary>
+        /// Check if the badge type match
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         bool AuthType(string type);
     }
     /// <summary>
-    /// Tag interface for options
+    /// Badge signer interface
     /// </summary>
     public interface IDewBadgeSigner
     {
+        /// <summary>
+        /// Return the sign from context
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         string GetSign(HttpContext context);
-
+        /// <summary>
+        /// Sign in
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="context"></param>
+        /// <param name="options"></param>
+        /// <param name="badge"></param>
+        /// <returns></returns>
         bool SignIn<T>(HttpContext context, T options, IDewBadge badge) where T : DewBadgeOptions;
+        /// <summary>
+        /// Sign out
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="context"></param>
+        /// <param name="options"></param>
+        /// <param name="badge"></param>
+        /// <returns></returns>
         bool SignOut<T>(HttpContext context, T options, IDewBadge badge) where T : DewBadgeOptions;
     }
 }
