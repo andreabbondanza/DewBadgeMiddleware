@@ -239,7 +239,9 @@ namespace DewCore.AspNetCore.Middlewares
         public string GetSign(HttpContext context)
         {
             string result = null;
-            var header = context.Request.Headers.FirstOrDefault(x => { return x.Key == "Authorization"; });
+            var options = context.GetDewBadgeOptions();
+            var opt = options as DewBadgeOptionsJWT;
+            var header = context.Request.Headers.FirstOrDefault(x => { return x.Key == opt.HeaderName; });
             if (!header.Equals(default(KeyValuePair<string, Microsoft.Extensions.Primitives.StringValues>)))
                 result = header.Value;
             if (result != null)
