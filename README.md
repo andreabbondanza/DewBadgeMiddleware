@@ -3,11 +3,11 @@ A middleware for authorization in a website.
 
 It works with dependency injecton and factory patterns so you can also customize it as you want.
 
-By default you will find two base class, cookie authentication and jwt authentication.
+By default you will find two base classes, cookie authentication and jwt authentication.
 
 # Objects
 
-Here we have the list of objects for the middleware use.
+Here we have the list of objects for the middleware.
 
 - __DewBadgeAttribute__: an attribute class for badge request
 - __DewBadgeOptions__: a base class for badge options. You can extend with your custom options (see __DewBadgeOptionsJWT__ or __DewBadgeOptionCookies__)
@@ -20,9 +20,9 @@ Here we have the list of objects for the middleware use.
 How works the badge?
 
 The idea is that every user has a badge, and the badge can be used in various ways.
-- The first and most simple is to assign a type to the badge, and, when the user try to access to a resource, you ask him about his badge and check the type (scenario 2).
-- The second is simple like the first, but when you create the badge, you can set in it a collection of claims. When the user try to access to a resource, you ask him about his badge and check the claims (scenario 3).
-- The most complex scenario is about the check of the Badge type and also the check of the claims. Just imagine a scenario where you can have two user with the same badge type but with different authorizations. You can assign to each of them a different collection of claims, so you can manage both at the same security level.
+- The first and most simple is to assign a type to the badge, and, when the user will try to access to a resource, you will ask him about his badge and check the type (scenario 2).
+- The second is simple like the first, but when you create the badge, you can set in it a collection of claims. When the user will try to access to a resource, you will ask him about his badge and check the claims (scenario 3).
+- The most complex scenario is about the check of the Badge type and also the check of the claims. Just imagine a scenario where you can have two users with the same badge type but with different authorizations. You can assign to each of them a different collection of claims, so you can manage both at the same security level.
 
 ![alt text](Scheme.jpg)
 
@@ -36,7 +36,7 @@ Some example about the use of the middleware
 
 ### Startup class
 
-The simplest use of the middleware in the startup class is defined here:
+A simplest use of the middleware in the startup class is defined here:
 
 ```c#
 app.UseBadgeMiddleware<DewBadgeSignerCookies>(new DewBadgeOptionsCookies()
@@ -47,9 +47,9 @@ app.UseBadgeMiddleware<DewBadgeSignerCookies>(new DewBadgeOptionsCookies()
                                              });
 ```
 
-How you can see, when you call __UseBadgeMiddleware__ you need to pass a type thats implements __IDewBadgeSigner__ interface. Via factory patter the middleware will initialize it and use it.
+How you can see, when you call __UseBadgeMiddleware__ you need to pass a type that implements __IDewBadgeSigner__ interface. Via factory patter the middleware will initialize it and use it.
 
-__NOTE:__ Method where costraint check if the IDewBadgeSigner has a public and parameterless constructor
+__NOTE:__ The method has a costraint that will check if the IDewBadgeSigner has a public and parameterless constructor
 
 __NOTE:__ If no option will be passed, the middleware will create the default options
 
@@ -143,7 +143,7 @@ app.UseBadgeMiddleware<DewBadgeSignerCookies>(new DewBadgeOptionsCookies()
 
 How you can see, when you call __UseBadgeMiddleware__ you need to pass a type thats implements __IDewBadgeSigner__ interface. Via factory patter the middleware will initialize it and use it.
 
-__NOTE:__ Method where costraint check if the IDewBadgeSigner has a public and parameterless constructor.
+__NOTE:__ The method has a costraint that will check if the IDewBadgeSigner has a public and parameterless constructor.
 
 __NOTE:__ You will use only SignIn and SignOut, GetSign is used by middleware (however if you want you can use it wherever you want)
 
@@ -174,7 +174,7 @@ However you should note the Injection of DewBadgeSignerCookies into the method. 
 
 Same thing for SignOut.
 
-__NOTE:__ In the middleware (in startup class) and whe you call SignIn/Out methods, you need to pass the same IDewBadgeSignature implementation.
+__NOTE:__ In the middleware (in startup class) and when you call SignIn/Out methods, you need to pass the same IDewBadgeSignature implementation.
 
 ## Note 
 ## NuGet

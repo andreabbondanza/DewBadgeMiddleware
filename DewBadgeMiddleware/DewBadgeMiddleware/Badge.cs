@@ -2,10 +2,10 @@
 using Jose;
 using Microsoft.AspNetCore.Http;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using DewCore.Extensions.Strings;
 
 namespace DewCore.AspNetCore.Middlewares
 {
@@ -43,11 +43,11 @@ namespace DewCore.AspNetCore.Middlewares
         /// </summary>
         public JwsAlgorithm HashSign = JwsAlgorithm.HS512;
 
-        private BadgeClaims _claims;
+        private DewBadgeClaims _claims;
         /// <summary>
         /// List of the badge claims
         /// </summary>
-        public BadgeClaims Claims
+        public DewBadgeClaims Claims
         {
             get { return _claims; }
             set { _claims = value; }
@@ -170,11 +170,52 @@ namespace DewCore.AspNetCore.Middlewares
         /// </summary>
         /// <param name="type"></param>
         public DewBadge(string type) { }
+        /// <summary>
+        /// Equals
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public override bool Equals(object obj)
+        {
+            var o = obj as DewBadge;
+            if (o == null)
+                return false;
+            string result = _type;
+            foreach (var item in _claims.OrderBy(x => x))
+            {
+                result = result + item;
+            }
+            string result1 = o._type;
+            foreach (var item in o._claims.OrderBy(x => x))
+            {
+                result1 = result1 + item;
+            }
+            return result == result1;
+        }
+        /// <summary>
+        /// Get hash
+        /// </summary>
+        /// <returns></returns>
+        public override int GetHashCode()
+        {
+            string result = _type;
+            foreach (var item in _claims.OrderBy(x => x))
+            {
+                result = result + item;
+            }
+            var bytes = result.ToBytes();
+            int hash = 0;
+            foreach (var item in bytes)
+            {
+                hash += item % 7;
+            }
+            return hash;
+        }
     }
     /// <summary>
     /// Badge claims class
     /// </summary>
-    public class BadgeClaims : List<string>
+    public class DewBadgeClaims : List<string>
     {
 
     }
