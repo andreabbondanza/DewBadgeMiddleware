@@ -283,7 +283,10 @@ namespace DewCore.AspNetCore.Middlewares
         public bool SignIn<T>(HttpContext context, T options, DewBadge badge, object tag) where T : DewBadgeOptions
         {
             var opt = options as DewBadgeOptionsCookies;
-            context.Response.Cookies.Append(opt.CookieName, badge.GetSign(opt.Secret), new CookieOptions() { Expires = opt.CookieExpiring });
+            var remember = false;
+            if (tag != null)
+                remember = (bool)tag;
+            context.Response.Cookies.Append(opt.CookieName, badge.GetSign(opt.Secret), new CookieOptions() { Expires = remember ? opt.CookieRemember : opt.CookieExpiring });
             return true;
         }
         /// <summary>
