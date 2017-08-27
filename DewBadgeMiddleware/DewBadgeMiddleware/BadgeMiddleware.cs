@@ -21,8 +21,8 @@ namespace DewCore.AspNetCore.Middlewares
         /// Constructor
         /// </summary>
         /// <param name="next">Next middleware</param>
-        /// <param name="cs">Connection string</param>
-        /// <param name="tp">Table prefix</param>
+        /// <param name="bo">Connection string</param>
+        /// <param name="signReader">Table prefix</param>
         public DewBadgeMiddleware(RequestDelegate next, DewBadgeOptions bo, IDewBadgeSigner signReader)
         {
             _next = next;
@@ -92,15 +92,16 @@ namespace DewCore.AspNetCore.Middlewares
         /// </summary>
         /// <param name="context"></param>
         /// <param name="badge"></param>
+        /// <param name="tag">Custom field</param>
         /// <returns></returns>
-        public static bool DewBadgeSignIn<T>(this HttpContext context, DewBadge badge) where T : class, IDewBadgeSigner, new()
+        public static bool DewBadgeSignIn<T>(this HttpContext context, DewBadge badge, object tag = null) where T : class, IDewBadgeSigner, new()
         {
             bool result = true;
             var options = context.GetDewBadgeOptions();
             var signer = new T();
             if (options != null)
             {
-                if (!signer.SignIn(context, options, badge))
+                if (!signer.SignIn(context, options, badge, tag))
                     result = false;
             }
             else
@@ -112,15 +113,16 @@ namespace DewCore.AspNetCore.Middlewares
         /// </summary>
         /// <param name="context"></param>
         /// <param name="badge"></param>
+        /// <param name="tag">Custom field</param>
         /// <returns></returns>
-        public static bool DewBadgeSignOut<T>(this HttpContext context, DewBadge badge) where T : class, IDewBadgeSigner, new()
+        public static bool DewBadgeSignOut<T>(this HttpContext context, DewBadge badge, object tag = null) where T : class, IDewBadgeSigner, new()
         {
             bool result = true;
             var options = context.GetDewBadgeOptions();
             var signer = new T();
             if (options != null)
             {
-                if (!signer.SignOut(context, options, badge))
+                if (!signer.SignOut(context, options, badge, tag))
                     result = false;
             }
             else
@@ -137,15 +139,14 @@ namespace DewCore.AspNetCore.Middlewares
         /// Builder method
         /// </summary>
         /// <param name="builder"></param>
-        /// <param name="bo">Badge options</param>
-        /// <param name="tp"></param>
+        /// <param name="badgeOptions">Badge options</param>
         /// <returns></returns>
         public static IApplicationBuilder UseBadgeMiddleware<T>(
-           this IApplicationBuilder builder, DewBadgeOptions bo = null) where T : class, IDewBadgeSigner, new()
+           this IApplicationBuilder builder, DewBadgeOptions badgeOptions = null) where T : class, IDewBadgeSigner, new()
         {
             T signer = new T();
-            bo = bo == null ? new DewBadgeOptions() : bo;
-            return builder.UseMiddleware<DewBadgeMiddleware>(bo, signer);
+            badgeOptions = badgeOptions == null ? new DewBadgeOptions() : badgeOptions;
+            return builder.UseMiddleware<DewBadgeMiddleware>(badgeOptions, signer);
         }
     }
 }

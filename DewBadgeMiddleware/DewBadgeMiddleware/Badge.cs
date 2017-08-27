@@ -14,20 +14,50 @@ namespace DewCore.AspNetCore.Middlewares
     /// </summary>
     public class DewBadgeOptions
     {
+        /// <summary>
+        /// Redirect path for not authorized requests
+        /// </summary>
         public string RedirectNotAuthorized { get; set; } = "/errors/notauth";
+        /// <summary>
+        /// Redirect path for error on requests
+        /// </summary>
         public string RedirectOnError { get; set; } = "/errors/error";
+        /// <summary>
+        /// Secret key for hash
+        /// </summary>
         public string Secret { get; set; } = "carriagenostop";
 
     }
-
+    /// <summary>
+    /// Option class for cookies
+    /// </summary>
     public class DewBadgeOptionsCookies : DewBadgeOptions
     {
+        /// <summary>
+        /// Cookie name
+        /// </summary>
         public string CookieName { get; set; } = "authsign";
+        /// <summary>
+        /// Cookie expire time
+        /// </summary>
         public DateTime CookieExpiring { get; set; } = DateTime.Now.AddMinutes(60);
+        /// <summary>
+        /// Cookie remember time
+        /// </summary>
+        public DateTime CookieRemember { get; set; } = DateTime.Now.AddMinutes(14400);
     }
+    /// <summary>
+    /// Option class for jwt
+    /// </summary>
     public class DewBadgeOptionsJWT : DewBadgeOptions
     {
+        /// <summary>
+        /// Request header name
+        /// </summary>
         public string HeaderName { get; set; } = "Authorization";
+        /// <summary>
+        /// Bearer string
+        /// </summary>
         public string Bearer { get; set; } = "bearer ";
     }
 
@@ -248,8 +278,9 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="context"></param>
         /// <param name="options"></param>
         /// <param name="badge"></param>
+        /// <param name="tag"></param>
         /// <returns></returns>
-        public bool SignIn<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions
+        public bool SignIn<T>(HttpContext context, T options, DewBadge badge, object tag) where T : DewBadgeOptions
         {
             var opt = options as DewBadgeOptionsCookies;
             context.Response.Cookies.Append(opt.CookieName, badge.GetSign(opt.Secret), new CookieOptions() { Expires = opt.CookieExpiring });
@@ -261,8 +292,9 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="context"></param>
         /// <param name="options"></param>
         /// <param name="badge"></param>
+        /// <param name="tag"></param>
         /// <returns></returns>
-        public bool SignOut<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions
+        public bool SignOut<T>(HttpContext context, T options, DewBadge badge, object tag) where T : DewBadgeOptions
         {
             var opt = options as DewBadgeOptionsCookies;
             context.Response.Cookies.Delete(opt.CookieName);
@@ -299,8 +331,9 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="context"></param>
         /// <param name="options"></param>
         /// <param name="badge"></param>
+        /// <param name="tag"></param>
         /// <returns></returns>
-        public bool SignIn<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions
+        public bool SignIn<T>(HttpContext context, T options, DewBadge badge, object tag) where T : DewBadgeOptions
         {
             var opt = options as DewBadgeOptionsJWT;
             context.Response.Headers.Add(opt.HeaderName, opt.Bearer + badge.GetSign(options.Secret));
@@ -312,8 +345,9 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="context"></param>
         /// <param name="options"></param>
         /// <param name="badge"></param>
+        /// <param name="tag"></param>
         /// <returns></returns>
-        public bool SignOut<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions
+        public bool SignOut<T>(HttpContext context, T options, DewBadge badge, object tag) where T : DewBadgeOptions
         {
             return true;
         }

@@ -60,8 +60,9 @@ namespace DewCore.Abstract.AspNetCore.Middlewares
         /// <param name="context"></param>
         /// <param name="options"></param>
         /// <param name="badge"></param>
+        /// <param name="tag"></param>
         /// <returns></returns>
-        bool SignIn<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions;
+        bool SignIn<T>(HttpContext context, T options, DewBadge badge, object tag) where T : DewBadgeOptions;
         /// <summary>
         /// Sign out
         /// </summary>
@@ -69,7 +70,8 @@ namespace DewCore.Abstract.AspNetCore.Middlewares
         /// <param name="context"></param>
         /// <param name="options"></param>
         /// <param name="badge"></param>
+        /// <param name="tag"></param>
         /// <returns></returns>
-        bool SignOut<T>(HttpContext context, T options, DewBadge badge) where T : DewBadgeOptions;
+        bool SignOut<T>(HttpContext context, T options, DewBadge badge, object tag) where T : DewBadgeOptions;
     }
 }
