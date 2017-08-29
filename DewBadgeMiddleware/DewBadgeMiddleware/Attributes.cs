@@ -68,7 +68,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <summary>
         /// Attribute for Badge
         /// </summary>
-        /// <param name="claims">List of requested claims (separated by commma)</param>
+        /// <param name="claims">List of requested claims (separated by comma)</param>
         public DewBadgeAttribute(string claims)
         {
             this._claims = claims;
@@ -77,21 +77,21 @@ namespace DewCore.AspNetCore.Middlewares
         /// <summary>
         /// Attribute for Badge
         /// </summary>
-        /// <param name="claims">List of requested claims (separated by commma)</param>
-        /// <param name="type">Badge type</param>
-        public DewBadgeAttribute(string claims, string type)
+        /// <param name="claims">List of requested claims (separated by comma)</param>
+        /// <param name="types">Badge types (separated by comma)</param>
+        public DewBadgeAttribute(string claims, string types)
         {
             _claims = claims;
-            _type = type;
+            _type = types;
         }
         /// <summary>
         /// Attribute for Badge
         /// </summary>
-        /// <param name="type">Badge type</param>
+        /// <param name="types">Badge types (separated by comma)</param>
         /// <param name="tag">Tag argoument, ignore it</param>
-        public DewBadgeAttribute(string type, bool tag = true)
+        public DewBadgeAttribute(string types, bool tag = true)
         {
-            _type = type;
+            _type = types;
         }
         /// <summary>
         /// List of claims

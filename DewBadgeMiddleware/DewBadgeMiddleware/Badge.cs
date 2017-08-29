@@ -130,7 +130,6 @@ namespace DewCore.AspNetCore.Middlewares
         public bool HasClaims(string claims)
         {
             bool result = false;
-            List<string> toTest = new List<string>();
             if (claims.Contains(","))
             {
                 foreach (var item in claims.Split(','))
@@ -185,11 +184,28 @@ namespace DewCore.AspNetCore.Middlewares
         /// <summary>
         /// Check if the badge type match
         /// </summary>
-        /// <param name="type"></param>
+        /// <param name="types"></param>
         /// <returns></returns>
-        public bool AuthType(string type)
+        public bool AuthType(string types)
         {
-            return _type == type;
+            if (_type == null)
+                return false;
+            bool result = false;
+            var typesInternal = _type.Split(',');
+            if (types.Contains(","))
+            {
+                foreach (var item in types.Split(','))
+                {
+                    if (typesInternal.FirstOrDefault(x => x == item) != default(string))
+                    {
+                        result = true;
+                        break;
+                    }
+                }
+            }
+            else
+                result = typesInternal.FirstOrDefault(x => x == types) != default(string);
+            return result;
         }
         /// <summary>
         /// Constructor
@@ -198,8 +214,8 @@ namespace DewCore.AspNetCore.Middlewares
         /// <summary>
         /// Constructor with type
         /// </summary>
-        /// <param name="type"></param>
-        public DewBadge(string type) { }
+        /// <param name="types">Types (separated by comma), es: type or type1,type2,type3</param>
+        public DewBadge(string types) { }
         /// <summary>
         /// Equals
         /// </summary>
