@@ -68,11 +68,14 @@ namespace DewCore.AspNetCore.Middlewares
     /// </summary>
     public class DewBadge : IDewBadge
     {
-        private readonly string _type = null;
+        /// <summary>
+        /// Badge types
+        /// </summary>
+        public string Types = null;
         /// <summary>
         /// Hash algoritm for the sign
         /// </summary>
-        public JwsAlgorithm HashSign = JwsAlgorithm.HS512;
+        public JwsAlgorithm HashSign = JwsAlgorithm.HS256;
 
         private DewBadgeClaims _claims;
         /// <summary>
@@ -152,7 +155,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public virtual bool IsExpired()
         {
-            return _expired >= DateTime.Now;
+            return _expired <= DateTime.Now;
         }
         /// <summary>
         /// Return badge sign
@@ -189,13 +192,13 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public virtual bool AuthType(string types)
         {
-            if (_type == null)
+            if (Types == null)
                 return false;
             bool result = false;
-            var typesInternal = _type.Split(',');
+            var typesInternal = Types.Split(',');
             if (types.Contains(","))
             {
-                foreach (var item in types.Split(','))
+                foreach (var item in Types.Split(','))
                 {
                     if (typesInternal.FirstOrDefault(x => x == item) != default(string))
                     {
@@ -216,7 +219,10 @@ namespace DewCore.AspNetCore.Middlewares
         /// Constructor with type
         /// </summary>
         /// <param name="types">Types (separated by comma), es: type or type1,type2,type3</param>
-        public DewBadge(string types) { }
+        public DewBadge(string types)
+        {
+            Types = types;
+        }
         /// <summary>
         /// Equals
         /// </summary>
@@ -227,12 +233,12 @@ namespace DewCore.AspNetCore.Middlewares
             var o = obj as DewBadge;
             if (o == null)
                 return false;
-            string result = _type;
+            string result = Types;
             foreach (var item in _claims.OrderBy(x => x))
             {
                 result = result + item;
             }
-            string result1 = o._type;
+            string result1 = o.Types;
             foreach (var item in o._claims.OrderBy(x => x))
             {
                 result1 = result1 + item;
@@ -245,7 +251,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public override int GetHashCode()
         {
-            string result = _type;
+            string result = Types;
             foreach (var item in _claims.OrderBy(x => x))
             {
                 result = result + item;
