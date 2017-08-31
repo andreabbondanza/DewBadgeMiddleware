@@ -25,7 +25,8 @@ namespace DewCore.AspNetCore.Middlewares
             var badge = context.HttpContext.GetDewBadge<DewBadge>();
             if (sign == null)
             {
-                context.HttpContext.Response.Redirect(options.RedirectNotAuthorized);
+//                context.HttpContext.Response.Redirect(options.RedirectNotAuthorized);
+                context.Result = new UnauthorizedResult();
                 return;
             }
             if (!badge.IsExpired())

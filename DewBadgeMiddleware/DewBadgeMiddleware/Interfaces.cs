@@ -1,6 +1,7 @@
 ﻿using DewCore.AspNetCore.Middlewares;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -47,13 +48,13 @@ namespace DewCore.Abstract.AspNetCore.Middlewares
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        void ResponseOnError(DewBadgeOptions options, HttpContext ctx);
+        void ResponseOnError(DewBadgeOptions options, ActionExecutingContext ctx);
         /// <summary>
         /// Response for No authorization
         /// </summary>
         /// <param name="options"></param>
         /// <returns></returns>
-        void ResponseNoAuth(DewBadgeOptions options, HttpContext ctx);
+        void ResponseNoAuth(DewBadgeOptions options, ActionExecutingContext ctx);
     }
     /// <summary>
     /// Badge signer interface

@@ -15,7 +15,7 @@
     <PackageIconUrl>http://andrewdev.eu/wp-content/uploads/2016/08/OnlyLogo.png</PackageIconUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <Version>1.4.2</Version>
-    <PackageReleaseNotes>Fixed bug that types is null after decode</PackageReleaseNotes>
+    <PackageReleaseNotes>Fixed nulled sign bug</PackageReleaseNotes>
     <AssemblyVersion>1.4.2.0</AssemblyVersion>
     <FileVersion>1.4.2.0</FileVersion>
   </PropertyGroup>

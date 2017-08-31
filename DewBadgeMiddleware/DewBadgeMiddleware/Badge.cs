@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using DewCore.Extensions.Strings;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace DewCore.AspNetCore.Middlewares
 {
@@ -23,6 +24,10 @@ namespace DewCore.AspNetCore.Middlewares
         /// Redirect path for error on requests
         /// </summary>
         public string RedirectOnError { get; set; } = "/errors/error";
+        /// <summary>
+        /// Redirect path for error on requests
+        /// </summary>
+        public string RedirectForbidden { get; set; } = "/errors/forbidden";
         /// <summary>
         /// Secret key for hash
         /// </summary>
@@ -270,9 +275,9 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// /// <param name="ctx">httpcontext</param>
         /// <returns></returns>
-        public virtual void ResponseNoAuth(DewBadgeOptions options, HttpContext ctx)
+        public virtual void ResponseNoAuth(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Response.Redirect(options.RedirectNotAuthorized);
+            ctx.Result = new UnauthorizedResult();
         }
         /// <summary>
         /// Return redirect no auth
@@ -280,9 +285,9 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// <param name="ctx">httpcontext</param>
         /// <returns></returns>
-        public virtual void ResponseOnError(DewBadgeOptions options, HttpContext ctx)
+        public virtual void ResponseOnError(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Response.Redirect(options.RedirectOnError);
+            ctx.Result = new BadRequestResult();
         }
     }
     /// <summary>
@@ -296,11 +301,12 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// /// <param name="ctx">httpcontext</param>
         /// <returns></returns>
-        public override void ResponseNoAuth(DewBadgeOptions options, HttpContext ctx)
+        public override void ResponseNoAuth(DewBadgeOptions options, ActionExecutingContext ctx)
         {
+            ctx.HttpContext.Response.StatusCode = 401;
             var response = new { Text = "Not Authorized for the resource", Error = "00001" };
-            ctx.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(response));
-            ctx.Response.Redirect("");
+            ctx.HttpContext.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(response));
+            ctx.HttpContext.Response.Redirect("");
         }
         /// <summary>
         /// Return redirect no auth
@@ -308,11 +314,12 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// <param name="ctx">httpcontext</param>
         /// <returns></returns>
-        public override void ResponseOnError(DewBadgeOptions options, HttpContext ctx)
+        public override void ResponseOnError(DewBadgeOptions options, ActionExecutingContext ctx)
         {
+            ctx.HttpContext.Response.StatusCode = 500;
             var response = new { Text = "Error on the resource", Error = "00002" };
-            ctx.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(response));
-            ctx.Response.Redirect("");
+            ctx.HttpContext.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(response));
+            ctx.HttpContext.Response.Redirect("");
         }
 
     }

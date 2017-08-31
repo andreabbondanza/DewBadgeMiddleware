@@ -35,7 +35,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="context"></param>
         /// <param name="env"></param>
         /// <returns></returns>
-        public Task Invoke(HttpContext context, IHostingEnvironment env)
+        public async Task Invoke(HttpContext context, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
             {
@@ -44,7 +44,14 @@ namespace DewCore.AspNetCore.Middlewares
             context.Items.Add("DewBadgeOptions", _bo);
             string sign = _signReader.GetSign(context);
             context.Items.Add("DewBadgeSign", sign);
-            return _next(context);
+            await _next(context);
+            if(context.Response.StatusCode == 401)
+            {
+                if(_bo.RedirectNotAuthorized != null)
+                {
+                    context.Response.Redirect(_bo.RedirectNotAuthorized);
+                }
+            }
         }
     }
     /// <summary>
