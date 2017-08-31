@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using DewCore.Extensions.Strings;
+using Microsoft.AspNetCore.Mvc;
 
 namespace DewCore.AspNetCore.Middlewares
 {
@@ -149,7 +150,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// Return true if object is expired
         /// </summary>
         /// <returns></returns>
-        public bool IsExpired()
+        public virtual bool IsExpired()
         {
             return _expired >= DateTime.Now;
         }
@@ -158,7 +159,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// </summary>
         /// <param name="secret"></param>
         /// <returns></returns>
-        public string GetSign(string secret)
+        public virtual string GetSign(string secret)
         {
             string payload = Newtonsoft.Json.JsonConvert.SerializeObject(this);
             string token = JWT.Encode(payload, Encoding.ASCII.GetBytes(secret), HashSign);
@@ -186,7 +187,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// </summary>
         /// <param name="types"></param>
         /// <returns></returns>
-        public bool AuthType(string types)
+        public virtual bool AuthType(string types)
         {
             if (_type == null)
                 return false;
@@ -257,7 +258,59 @@ namespace DewCore.AspNetCore.Middlewares
             }
             return hash;
         }
+        /// <summary>
+        /// Return redirect on error
+        /// </summary>
+        /// <param name="options"></param>
+        /// /// <param name="ctx">httpcontext</param>
+        /// <returns></returns>
+        public virtual void ResponseNoAuth(DewBadgeOptions options, HttpContext ctx)
+        {
+            ctx.Response.Redirect(options.RedirectNotAuthorized);
+        }
+        /// <summary>
+        /// Return redirect no auth
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="ctx">httpcontext</param>
+        /// <returns></returns>
+        public virtual void ResponseOnError(DewBadgeOptions options, HttpContext ctx)
+        {
+            ctx.Response.Redirect(options.RedirectOnError);
+        }
     }
+    /// <summary>
+    /// Badge for api
+    /// </summary>
+    public class DewBadgeApi : DewBadge
+    {
+        /// <summary>
+        /// Return redirect on error
+        /// </summary>
+        /// <param name="options"></param>
+        /// /// <param name="ctx">httpcontext</param>
+        /// <returns></returns>
+        public override void ResponseNoAuth(DewBadgeOptions options, HttpContext ctx)
+        {
+            var response = new { Text = "Not Authorized for the resource", Error = "00001" };
+            ctx.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(response));
+            ctx.Response.Redirect("");
+        }
+        /// <summary>
+        /// Return redirect no auth
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="ctx">httpcontext</param>
+        /// <returns></returns>
+        public override void ResponseOnError(DewBadgeOptions options, HttpContext ctx)
+        {
+            var response = new { Text = "Error on the resource", Error = "00002" };
+            ctx.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(response));
+            ctx.Response.Redirect("");
+        }
+
+    }
+
     /// <summary>
     /// Badge claims class
     /// </summary>

@@ -14,10 +14,10 @@
     <PackageTags>Authorization, aspnetcore, .netcore</PackageTags>
     <PackageIconUrl>http://andrewdev.eu/wp-content/uploads/2016/08/OnlyLogo.png</PackageIconUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>1.3.0</Version>
+    <Version>1.4.0</Version>
     <PackageReleaseNotes>Fixed Remember option to cookies options</PackageReleaseNotes>
-    <AssemblyVersion>1.3.0.0</AssemblyVersion>
-    <FileVersion>1.3.0.0</FileVersion>
+    <AssemblyVersion>1.4.0.0</AssemblyVersion>
+    <FileVersion>1.4.0.0</FileVersion>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
