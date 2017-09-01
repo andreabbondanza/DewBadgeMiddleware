@@ -84,8 +84,6 @@ __NOTE:__ If the action miss the signature or the options, response will be redi
 
 ### Default options
 
-- RedirectOnError: the url to redirect when the action miss signature
-- RedirectNotAuthorized: the url to redirect when the action miss claims or type
 - Secret: The secret key to encript the signature
 
 #### Additional default options
@@ -94,6 +92,11 @@ __NOTE:__ If the action miss the signature or the options, response will be redi
 
 - CookieName: The cookie name (default "authsign")
 - CookieExpiring: The cookie expiring time (default 60 minutes)
+- CookieRemember: The cookie remember time
+- RedirectForbidden: The redirect url for forbidden
+- RedirectOnBadRequest: The redirect url for bad request
+- RedirectNotAuthorized: The redirect url for not authorized
+- EnableRedirect: Enable the redirect, if false the server will return the httpstatus code response
 
 ##### DewBadgeOptionsJWT
 
