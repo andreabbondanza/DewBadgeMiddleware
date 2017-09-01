@@ -45,13 +45,6 @@ namespace DewCore.AspNetCore.Middlewares
             string sign = _signReader.GetSign(context);
             context.Items.Add("DewBadgeSign", sign);
             await _next(context);
-            if(context.Response.StatusCode == 401)
-            {
-                if(_bo.RedirectNotAuthorized != null)
-                {
-                    context.Response.Redirect(_bo.RedirectNotAuthorized);
-                }
-            }
         }
     }
     /// <summary>

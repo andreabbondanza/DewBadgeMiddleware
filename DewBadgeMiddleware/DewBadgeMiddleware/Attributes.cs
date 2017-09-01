@@ -23,10 +23,10 @@ namespace DewCore.AspNetCore.Middlewares
             var sign = context.HttpContext.GetDewBadgeSign();
             var options = context.HttpContext.GetDewBadgeOptions();
             var badge = context.HttpContext.GetDewBadge<DewBadge>();
-            if (sign == null)
+            if (badge == null)
             {
-//                context.HttpContext.Response.Redirect(options.RedirectNotAuthorized);
-                context.Result = new UnauthorizedResult();
+                badge = new DewBadge() { };
+                badge.ResponseNoAuth(options, context);
                 return;
             }
             if (!badge.IsExpired())
@@ -35,7 +35,7 @@ namespace DewCore.AspNetCore.Middlewares
                 {
                     if (!badge.AuthType(_type))
                     {
-                        badge.ResponseNoAuth(options, context.HttpContext);
+                        badge.ResponseNoAuth(options, context);
                     }
                 }
                 else
@@ -44,7 +44,7 @@ namespace DewCore.AspNetCore.Middlewares
                     {
                         if (!badge.AuthType(_type) || !badge.HasClaims(_claims))
                         {
-                            badge.ResponseNoAuth(options, context.HttpContext);
+                            badge.ResponseNoAuth(options, context);
                         }
                     }
                     else
@@ -53,7 +53,7 @@ namespace DewCore.AspNetCore.Middlewares
                         {
                             if (!badge.HasClaims(_claims))
                             {
-                                badge.ResponseNoAuth(options, context.HttpContext);
+                                badge.ResponseNoAuth(options, context);
                             }
                         }
                     }
@@ -61,7 +61,7 @@ namespace DewCore.AspNetCore.Middlewares
             }
             else
             {
-                context.HttpContext.Response.Redirect(options.RedirectNotAuthorized);
+                badge.ResponseOnExpired(options, context);
             }
         }
         readonly string _type = null;
@@ -120,7 +120,8 @@ namespace DewCore.AspNetCore.Middlewares
             var badge = context.HttpContext.GetDewBadge<DewBadgeApi>();
             if (sign == null)
             {
-                badge.ResponseOnError(options, context.HttpContext);
+                badge = new DewBadge() { };
+                badge.ResponseNoAuth(options, context);
                 return;
             }
             if (!badge.IsExpired())
@@ -129,7 +130,7 @@ namespace DewCore.AspNetCore.Middlewares
                 {
                     if (!badge.AuthType(_type))
                     {
-                        badge.ResponseNoAuth(options, context.HttpContext);
+                        badge.ResponseNoAuth(options, context);
                     }
                 }
                 else
@@ -138,7 +139,7 @@ namespace DewCore.AspNetCore.Middlewares
                     {
                         if (!badge.AuthType(_type) || !badge.HasClaims(_claims))
                         {
-                            badge.ResponseNoAuth(options, context.HttpContext);
+                            badge.ResponseNoAuth(options, context);
                         }
                     }
                     else
@@ -147,7 +148,7 @@ namespace DewCore.AspNetCore.Middlewares
                         {
                             if (!badge.HasClaims(_claims))
                             {
-                                badge.ResponseNoAuth(options, context.HttpContext);
+                                badge.ResponseNoAuth(options, context);
                             }
                         }
                     }
@@ -155,7 +156,7 @@ namespace DewCore.AspNetCore.Middlewares
             }
             else
             {
-                context.HttpContext.Response.Redirect(options.RedirectNotAuthorized);
+                badge.ResponseOnExpired(options, context);
             }
         }
         readonly string _type = null;

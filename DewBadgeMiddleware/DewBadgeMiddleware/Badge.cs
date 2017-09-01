@@ -17,28 +17,31 @@ namespace DewCore.AspNetCore.Middlewares
     public class DewBadgeOptions
     {
         /// <summary>
-        /// Redirect path for not authorized requests
-        /// </summary>
-        public string RedirectNotAuthorized { get; set; } = "/errors/notauth";
-        /// <summary>
-        /// Redirect path for error on requests
-        /// </summary>
-        public string RedirectOnError { get; set; } = "/errors/error";
-        /// <summary>
-        /// Redirect path for error on requests
-        /// </summary>
-        public string RedirectForbidden { get; set; } = "/errors/forbidden";
-        /// <summary>
         /// Secret key for hash
         /// </summary>
         public string Secret { get; set; } = "carriagenostop";
-
     }
     /// <summary>
     /// Option class for cookies
     /// </summary>
     public class DewBadgeOptionsCookies : DewBadgeOptions
     {
+        /// <summary>
+        /// Enable redirect
+        /// </summary>
+        public bool EnableRedirect { get; set; } = true;
+        /// <summary>
+        /// Redirect path for not authorized requests
+        /// </summary>
+        public string RedirectNotAuthorized { get; set; } = "/errors/notauth";
+        /// <summary>
+        /// Redirect path for error on requests
+        /// </summary>
+        public string RedirectOnBadRequest { get; set; } = "/errors/error";
+        /// <summary>
+        /// Redirect path for forbidden
+        /// </summary>
+        public string RedirectForbidden { get; set; } = "/errors/forbidden";
         /// <summary>
         /// Cookie name
         /// </summary>
@@ -277,7 +280,14 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public virtual void ResponseNoAuth(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new UnauthorizedResult();
+            var opt = options as DewBadgeOptionsCookies;
+            if (opt.EnableRedirect)
+            {
+                ctx.Result = new RedirectResult(opt.RedirectNotAuthorized+"?fallbackurl="+ctx.HttpContext.Request.Path);
+            }
+            else
+                ctx.Result = new UnauthorizedResult();
+
         }
         /// <summary>
         /// Return redirect no auth
@@ -287,7 +297,38 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public virtual void ResponseOnError(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new BadRequestResult();
+            var opt = options as DewBadgeOptionsCookies;
+            if (opt.EnableRedirect)
+                ctx.Result = new RedirectResult(opt.RedirectOnBadRequest + "?fallbackurl=" + ctx.HttpContext.Request.Path);
+            else
+                ctx.Result = new BadRequestResult();
+        }
+        /// <summary>
+        /// Return redirect no auth
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="ctx">httpcontext</param>
+        /// <returns></returns>
+        public virtual void ResponseOnForbidden(DewBadgeOptions options, ActionExecutingContext ctx)
+        {
+            var opt = options as DewBadgeOptionsCookies;
+            if (opt.EnableRedirect)
+                ctx.Result = new RedirectResult(opt.RedirectForbidden + "?fallbackurl=" + ctx.HttpContext.Request.Path);
+            else
+                ctx.Result = new ForbidResult();
+        }
+        /// <summary>
+        /// Return expired no auth
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="ctx"></param>
+        public virtual void ResponseOnExpired(DewBadgeOptions options, ActionExecutingContext ctx)
+        {
+            var opt = options as DewBadgeOptionsCookies;
+            if (opt.EnableRedirect)
+                ctx.Result = new RedirectResult(opt.RedirectForbidden + "?fallbackurl=" + ctx.HttpContext.Request.Path);
+            else
+                ctx.Result = new UnauthorizedResult();
         }
     }
     /// <summary>
@@ -296,7 +337,7 @@ namespace DewCore.AspNetCore.Middlewares
     public class DewBadgeApi : DewBadge
     {
         /// <summary>
-        /// Return redirect on error
+        /// Return result on error
         /// </summary>
         /// <param name="options"></param>
         /// /// <param name="ctx">httpcontext</param>
@@ -309,19 +350,43 @@ namespace DewCore.AspNetCore.Middlewares
             ctx.HttpContext.Response.Redirect("");
         }
         /// <summary>
-        /// Return redirect no auth
+        /// Return result no auth
         /// </summary>
         /// <param name="options"></param>
         /// <param name="ctx">httpcontext</param>
         /// <returns></returns>
         public override void ResponseOnError(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.HttpContext.Response.StatusCode = 500;
+            ctx.HttpContext.Response.StatusCode = 400;
             var response = new { Text = "Error on the resource", Error = "00002" };
             ctx.HttpContext.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(response));
             ctx.HttpContext.Response.Redirect("");
         }
-
+        /// <summary>
+        /// Return result forbidden
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="ctx">httpcontext</param>
+        /// <returns></returns>
+        public override void ResponseOnForbidden(DewBadgeOptions options, ActionExecutingContext ctx)
+        {
+            ctx.HttpContext.Response.StatusCode = 403;
+            var response = new { Text = "Error on the resource", Error = "00003" };
+            ctx.HttpContext.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(response));
+            ctx.HttpContext.Response.Redirect("");
+        }
+        /// <summary>
+        /// Return expired no auth
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="ctx"></param>
+        public override void ResponseOnExpired(DewBadgeOptions options, ActionExecutingContext ctx)
+        {
+            ctx.HttpContext.Response.StatusCode = 401;
+            var response = new { Text = "Badge expired, not authorized", Error = "00004" };
+            ctx.HttpContext.Response.WriteAsync(Newtonsoft.Json.JsonConvert.SerializeObject(response));
+            ctx.HttpContext.Response.Redirect("");
+        }
     }
 
     /// <summary>

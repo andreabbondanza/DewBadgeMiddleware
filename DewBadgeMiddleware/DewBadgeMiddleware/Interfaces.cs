@@ -55,6 +55,18 @@ namespace DewCore.Abstract.AspNetCore.Middlewares
         /// <param name="options"></param>
         /// <returns></returns>
         void ResponseNoAuth(DewBadgeOptions options, ActionExecutingContext ctx);
+        /// <summary>
+        /// Response for forbidden
+        /// </summary>
+        /// <param name="options"></param>
+        /// <returns></returns>
+        void ResponseOnForbidden(DewBadgeOptions options, ActionExecutingContext ctx);
+        /// <summary>
+        /// Expired response
+        /// </summary>
+        /// <param name="options"></param>
+        /// <param name="ctx"></param>
+        void ResponseOnExpired(DewBadgeOptions options, ActionExecutingContext ctx);
     }
     /// <summary>
     /// Badge signer interface
