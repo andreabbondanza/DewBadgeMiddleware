@@ -8,6 +8,7 @@ using System.Text;
 using DewCore.Extensions.Strings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Net;
 
 namespace DewCore.AspNetCore.Middlewares
 {
@@ -283,7 +284,7 @@ namespace DewCore.AspNetCore.Middlewares
             var opt = options as DewBadgeOptionsCookies;
             if (opt.EnableRedirect)
             {
-                ctx.Result = new RedirectResult(opt.RedirectNotAuthorized+"?fallbackurl="+ctx.HttpContext.Request.Path);
+                ctx.Result = new RedirectResult(opt.RedirectNotAuthorized+"?fallbackurl="+WebUtility.UrlEncode(ctx.HttpContext.Request.Path+ctx.HttpContext.Request.QueryString));
             }
             else
                 ctx.Result = new UnauthorizedResult();
@@ -299,7 +300,7 @@ namespace DewCore.AspNetCore.Middlewares
         {
             var opt = options as DewBadgeOptionsCookies;
             if (opt.EnableRedirect)
-                ctx.Result = new RedirectResult(opt.RedirectOnBadRequest + "?fallbackurl=" + ctx.HttpContext.Request.Path);
+                ctx.Result = new RedirectResult(opt.RedirectOnBadRequest + "?fallbackurl=" + WebUtility.UrlEncode(ctx.HttpContext.Request.Path + ctx.HttpContext.Request.QueryString));
             else
                 ctx.Result = new BadRequestResult();
         }
@@ -313,7 +314,7 @@ namespace DewCore.AspNetCore.Middlewares
         {
             var opt = options as DewBadgeOptionsCookies;
             if (opt.EnableRedirect)
-                ctx.Result = new RedirectResult(opt.RedirectForbidden + "?fallbackurl=" + ctx.HttpContext.Request.Path);
+                ctx.Result = new RedirectResult(opt.RedirectForbidden + "?fallbackurl=" + WebUtility.UrlEncode(ctx.HttpContext.Request.Path + ctx.HttpContext.Request.QueryString));
             else
                 ctx.Result = new ForbidResult();
         }
