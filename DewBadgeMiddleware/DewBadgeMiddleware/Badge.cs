@@ -327,7 +327,7 @@ namespace DewCore.AspNetCore.Middlewares
         {
             var opt = options as DewBadgeOptionsCookies;
             if (opt.EnableRedirect)
-                ctx.Result = new RedirectResult(opt.RedirectForbidden + "?fallbackurl=" + ctx.HttpContext.Request.Path);
+                ctx.Result = new RedirectResult(opt.RedirectForbidden + "?fallbackurl=" + WebUtility.UrlEncode(ctx.HttpContext.Request.Path + ctx.HttpContext.Request.QueryString));
             else
                 ctx.Result = new UnauthorizedResult();
         }
