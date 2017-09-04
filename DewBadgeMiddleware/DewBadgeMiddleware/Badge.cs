@@ -47,13 +47,13 @@ namespace DewCore.AspNetCore.Middlewares
         /// </summary>
         public string CookieName { get; set; } = "authsign";
         /// <summary>
-        /// Cookie expire time
+        /// Cookie expire time in minutes from creation
         /// </summary>
-        public DateTime CookieExpiring { get; set; } = DateTime.Now.AddMinutes(60);
+        public int CookieExpiring { get; set; } = 60;
         /// <summary>
-        /// Cookie remember time
+        /// Cookie remember time in minutes from creation
         /// </summary>
-        public DateTime CookieRemember { get; set; } = DateTime.Now.AddMinutes(14400);
+        public int CookieRemember { get; set; } = 14400;
     }
     /// <summary>
     /// Option class for jwt
@@ -433,7 +433,7 @@ namespace DewCore.AspNetCore.Middlewares
             var remember = false;
             if (tag != null)
                 remember = (bool)tag;
-            context.Response.Cookies.Append(opt.CookieName, badge.GetSign(opt.Secret), new CookieOptions() { Expires = remember ? opt.CookieRemember : opt.CookieExpiring });
+            context.Response.Cookies.Append(opt.CookieName, badge.GetSign(opt.Secret), new CookieOptions() { Expires = remember ? DateTime.Now.AddMinutes(opt.CookieRemember) : DateTime.Now.AddMinutes(opt.CookieExpiring) });
             return true;
         }
         /// <summary>
