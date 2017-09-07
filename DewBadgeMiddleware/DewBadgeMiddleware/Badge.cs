@@ -345,7 +345,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public override void ResponseNoAuth(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new ObjectResult(new { Text = "Not Authorized for the resource", Error = "00001" }) { StatusCode = 404 };
+            ctx.Result = new ObjectResult(new { Text = "Not Authorized for the resource", Error = "00001" }) { StatusCode = 403 };
         }
         /// <summary>
         /// Return result no auth
@@ -374,7 +374,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="ctx"></param>
         public override void ResponseOnExpired(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new ObjectResult(new { Text = "Badge expired, not authorized", Error = "00004" }) { StatusCode = 403 };
+            ctx.Result = new ObjectResult(new { Text = "Badge expired, not authorized", Error = "00004" }) { StatusCode = 401 };
         }
     }
 
