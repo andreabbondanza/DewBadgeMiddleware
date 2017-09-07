@@ -183,7 +183,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="sign"></param>
         /// <param name="secret"></param>
         /// <returns></returns>
-        public DewBadge DecodeSign(string sign, string secret)
+        public virtual DewBadge DecodeSign(string sign, string secret)
         {
             if (sign != null)
             {
@@ -337,6 +337,22 @@ namespace DewCore.AspNetCore.Middlewares
     /// </summary>
     public class DewBadgeApi : DewBadge
     {
+        /// Decode a sign and return a badge object
+        /// </summary>
+        /// <param name="sign"></param>
+        /// <param name="secret"></param>
+        /// <returns></returns>
+        public override DewBadge DecodeSign(string sign, string secret)
+        {
+            if (sign != null)
+            {
+                var secretKey = Encoding.ASCII.GetBytes(secret);
+                string myToken = JWT.Decode(sign, secretKey, HashSign);
+                DewBadge jt = Newtonsoft.Json.JsonConvert.DeserializeObject<DewBadgeApi>(myToken);
+                return jt;
+            }
+            return null;
+        }
         /// <summary>
         /// Return result on error
         /// </summary>
@@ -345,7 +361,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public override void ResponseNoAuth(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new ObjectResult(new { Text = "Not Authorized for the resource", Error = "00001" }) { StatusCode = 403 };
+            ctx.Result = new JsonResult(new { Text = "Not Authorized for the resource", Error = "00001" }) { StatusCode = 401 };
         }
         /// <summary>
         /// Return result no auth
@@ -355,7 +371,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public override void ResponseOnError(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new ObjectResult(new { Text = "Error on the resource", Error = "00002" }) { StatusCode = 400 };
+            ctx.Result = new JsonResult(new { Text = "Error on the resource", Error = "00002" }) { StatusCode = 400 };
         }
         /// <summary>
         /// Return result forbidden
@@ -365,7 +381,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public override void ResponseOnForbidden(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new ObjectResult(new { Text = "Dorbidden resource", Error = "00003" }) { StatusCode = 403 };
+            ctx.Result = new JsonResult(new { Text = "Forbidden resource", Error = "00003" }) { StatusCode = 403 };
         }
         /// <summary>
         /// Return expired no auth
@@ -374,7 +390,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="ctx"></param>
         public override void ResponseOnExpired(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new ObjectResult(new { Text = "Badge expired, not authorized", Error = "00004" }) { StatusCode = 401 };
+            ctx.Result = new JsonResult(new { Text = "Badge expired, not authorized", Error = "00004" }) { StatusCode = 401 };
         }
     }
 
