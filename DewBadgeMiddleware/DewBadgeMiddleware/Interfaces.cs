@@ -47,18 +47,21 @@ namespace DewCore.Abstract.AspNetCore.Middlewares
         /// Response for error 
         /// </summary>
         /// <param name="options"></param>
+        /// <param name="ctx"></param>
         /// <returns></returns>
         void ResponseOnError(DewBadgeOptions options, ActionExecutingContext ctx);
         /// <summary>
         /// Response for No authorization
         /// </summary>
         /// <param name="options"></param>
+        /// <param name="ctx"></param>
         /// <returns></returns>
         void ResponseNoAuth(DewBadgeOptions options, ActionExecutingContext ctx);
         /// <summary>
         /// Response for forbidden
         /// </summary>
         /// <param name="options"></param>
+        /// <param name="ctx"></param>
         /// <returns></returns>
         void ResponseOnForbidden(DewBadgeOptions options, ActionExecutingContext ctx);
         /// <summary>
