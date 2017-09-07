@@ -120,7 +120,7 @@ namespace DewCore.AspNetCore.Middlewares
             var badge = context.HttpContext.GetDewBadge<DewBadgeApi>();
             if (sign == null)
             {
-                badge = new DewBadge() { };
+                badge = new DewBadgeApi() { };
                 badge.ResponseNoAuth(options, context);
                 return;
             }
