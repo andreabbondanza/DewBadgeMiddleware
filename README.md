@@ -12,6 +12,7 @@ Here we have the list of objects for the middleware.
 - __DewBadgeAttribute__: an attribute class for badge request
 - __DewBadgeOptions__: a base class for badge options. You can extend with your custom options (see __DewBadgeOptionsJWT__ or __DewBadgeOptionCookies__)
 - __DewBadge__: the main badge class (implements IDewBadge) and base class for your implementations
+- __DewBadgeApi__: the main badge class for API (implements IDewBadge) and base class for your implementations
 - __IDewBadge__: Badge interface
 - __IDewBadgeSigner__: Signer interface - you can use the default implementatinos (DewBadgeSignerCookies or DewBadgeSignerJWT) or use one of yours
 
@@ -76,11 +77,17 @@ public IActionResult CheckBoth()
     ViewData["Message"] = "If you read this message, you have the card badge type with m1 or v1 claims.";
     return View();
 }
+[DewBadgeApi(type: "card)]
+public string GetList(){
+    return Newtonsoft.Json.JsonConvert.SerializeObject(await _model.GetList().ToList())
+}
 ```
 
 __NOTE:__ If the action miss the claims or types, response will be redirect to RedirectNotAuthorized url (options)
 
 __NOTE:__ If the action miss the signature or the options, response will be redirect to RedirectOnError (options)
+
+__NOTE:__ DewBadgeApi returns this json object if failed { Text : "value", Error : "number" } (with 401,400,403) status rispectively
 
 ### Default options
 
@@ -96,7 +103,10 @@ __NOTE:__ If the action miss the signature or the options, response will be redi
 - RedirectForbidden: The redirect url for forbidden
 - RedirectOnBadRequest: The redirect url for bad request
 - RedirectNotAuthorized: The redirect url for not authorized
+- ResponseOnExpired: Response when badge is expired
 - EnableRedirect: Enable the redirect, if false the server will return the httpstatus code response
+
+__NOTE:__ Redirect will pass the fallback url 
 
 ##### DewBadgeOptionsJWT
 

@@ -338,7 +338,7 @@ namespace DewCore.AspNetCore.Middlewares
     public class DewBadgeApi : DewBadge
     {
         /// Decode a sign and return a badge object
-        /// </summary>
+        /// <summary></summary>
         /// <param name="sign"></param>
         /// <param name="secret"></param>
         /// <returns></returns>
