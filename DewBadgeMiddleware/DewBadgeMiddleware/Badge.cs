@@ -183,13 +183,13 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="sign"></param>
         /// <param name="secret"></param>
         /// <returns></returns>
-        public virtual DewBadge DecodeSign(string sign, string secret)
+        public virtual T DecodeSign<T>(string sign, string secret) where T : class, IDewBadge, new()
         {
             if (sign != null)
             {
                 var secretKey = Encoding.ASCII.GetBytes(secret);
                 string myToken = JWT.Decode(sign, secretKey, HashSign);
-                DewBadge jt = Newtonsoft.Json.JsonConvert.DeserializeObject<DewBadge>(myToken);
+                T jt = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(myToken);
                 return jt;
             }
             return null;
@@ -342,13 +342,13 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="sign"></param>
         /// <param name="secret"></param>
         /// <returns></returns>
-        public override DewBadge DecodeSign(string sign, string secret)
+        public override T DecodeSign<T>(string sign, string secret)
         {
             if (sign != null)
             {
                 var secretKey = Encoding.ASCII.GetBytes(secret);
                 string myToken = JWT.Decode(sign, secretKey, HashSign);
-                DewBadge jt = Newtonsoft.Json.JsonConvert.DeserializeObject<DewBadgeApi>(myToken);
+                T jt = Newtonsoft.Json.JsonConvert.DeserializeObject<T>(myToken);
                 return jt;
             }
             return null;

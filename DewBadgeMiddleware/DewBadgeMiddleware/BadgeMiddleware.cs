@@ -69,12 +69,12 @@ namespace DewCore.AspNetCore.Middlewares
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static DewBadge GetDewBadge<T>(this HttpContext context) where T : DewBadge, new()
+        public static T GetDewBadge<T>(this HttpContext context) where T : class, IDewBadge, new()
         {
             var data = context.Items.FirstOrDefault(x => x.Key as string == "DewBadgeSign");
             var badge = new T();
             var options = context.GetDewBadgeOptions();
-            return data.Equals(default(KeyValuePair<object, object>)) ? null : badge.DecodeSign(data.Value as string, options.Secret) as T;
+            return data.Equals(default(KeyValuePair<object, object>)) ? null : badge.DecodeSign<T>(data.Value as string, options.Secret);
         }
 
         /// <summary>
