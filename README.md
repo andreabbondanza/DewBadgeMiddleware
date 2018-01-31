@@ -77,7 +77,7 @@ public IActionResult CheckBoth()
     ViewData["Message"] = "If you read this message, you have the card badge type with m1 or v1 claims.";
     return View();
 }
-[DewBadgeApi(type: "card)]
+[DewBadgeApi(type: "card")]
 public string GetList(){
     return Newtonsoft.Json.JsonConvert.SerializeObject(await _model.GetList().ToList())
 }
