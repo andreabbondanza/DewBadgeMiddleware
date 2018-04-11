@@ -137,26 +137,29 @@ namespace DewCore.AspNetCore.Middlewares
             set { _updated = value; }
         }
         /// <summary>
-        /// Check if the badge has one of the passed claims
+        /// Check if the badge has at least one of the passed claims
         /// </summary>
         /// <param name="claims">List of claims separated by commas</param>
         /// <returns></returns>
         public bool HasClaims(string claims)
         {
             bool result = false;
-            if (claims.Contains(","))
+            if (claims != null)
             {
-                foreach (var item in claims.Split(','))
+                if (claims.Contains(","))
                 {
-                    if (Claims.FirstOrDefault(x => x == item) != default(string))
+                    foreach (var item in claims.Split(','))
                     {
-                        result = true;
-                        break;
+                        if (Claims.FirstOrDefault(x => x == item) != default(string))
+                        {
+                            result = true;
+                            break;
+                        }
                     }
                 }
+                else
+                    result = Claims.FirstOrDefault(x => x == claims) != default(string);
             }
-            else
-                result = Claims.FirstOrDefault(x => x == claims) != default(string);
             return result;
         }
         /// <summary>
