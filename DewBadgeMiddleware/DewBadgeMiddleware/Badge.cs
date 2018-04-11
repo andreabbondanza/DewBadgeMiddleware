@@ -9,6 +9,7 @@ using DewCore.Extensions.Strings;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
+using DewCore.Types.AspNetCore;
 
 namespace DewCore.AspNetCore.Middlewares
 {
@@ -284,7 +285,7 @@ namespace DewCore.AspNetCore.Middlewares
             var opt = options as DewBadgeOptionsCookies;
             if (opt.EnableRedirect)
             {
-                ctx.Result = new RedirectResult(opt.RedirectNotAuthorized+"?fallbackurl="+WebUtility.UrlEncode(ctx.HttpContext.Request.Path+ctx.HttpContext.Request.QueryString));
+                ctx.Result = new RedirectResult(opt.RedirectNotAuthorized + "?fallbackurl=" + WebUtility.UrlEncode(ctx.HttpContext.Request.Path + ctx.HttpContext.Request.QueryString));
             }
             else
                 ctx.Result = new UnauthorizedResult();
@@ -361,7 +362,8 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public override void ResponseNoAuth(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new JsonResult(new { Text = "Not Authorized for the resource", Error = "00001" }) { StatusCode = 401 };
+            var resp = new StandardResponse() { Error = new StandardResponseError("Not Authorized for the resource", 1) };
+            ctx.Result = new JsonResult(resp) { StatusCode = 401 };
         }
         /// <summary>
         /// Return result no auth
@@ -371,7 +373,8 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public override void ResponseOnError(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new JsonResult(new { Text = "Error on the resource", Error = "00002" }) { StatusCode = 400 };
+            var resp = new StandardResponse() { Error = new StandardResponseError("Error on the resource", 2) };
+            ctx.Result = new JsonResult(resp) { StatusCode = 400 };
         }
         /// <summary>
         /// Return result forbidden
@@ -381,7 +384,8 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public override void ResponseOnForbidden(DewBadgeOptions options, ActionExecutingContext ctx)
         {
-            ctx.Result = new JsonResult(new { Text = "Forbidden resource", Error = "00003" }) { StatusCode = 403 };
+            var resp = new StandardResponse() { Error = new StandardResponseError("Forbidden resource", 3) };
+            ctx.Result = new JsonResult(resp) { StatusCode = 403 };
         }
         /// <summary>
         /// Return expired no auth
@@ -390,6 +394,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <param name="ctx"></param>
         public override void ResponseOnExpired(DewBadgeOptions options, ActionExecutingContext ctx)
         {
+            var resp = new StandardResponse() { Error = new StandardResponseError("Badge expired, not authorized", 4) };
             ctx.Result = new JsonResult(new { Text = "Badge expired, not authorized", Error = "00004" }) { StatusCode = 401 };
         }
     }
@@ -415,8 +420,7 @@ namespace DewCore.AspNetCore.Middlewares
         {
             string result = null;
             var options = context.GetDewBadgeOptions();
-            var opt = options as DewBadgeOptionsCookies;
-            if (opt != null)
+            if (options is DewBadgeOptionsCookies opt)
             {
                 var header = context.Request.Cookies.FirstOrDefault(x => { return x.Key == opt.CookieName; });
                 if (!header.Equals(default(KeyValuePair<string, Microsoft.Extensions.Primitives.StringValues>)))

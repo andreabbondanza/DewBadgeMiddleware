@@ -145,7 +145,7 @@ namespace DewCore.AspNetCore.Middlewares
            this IApplicationBuilder builder, DewBadgeOptions badgeOptions = null) where T : class, IDewBadgeSigner, new()
         {
             T signer = new T();
-            badgeOptions = badgeOptions == null ? new DewBadgeOptions() : badgeOptions;
+            badgeOptions = badgeOptions ?? new DewBadgeOptions();
             return builder.UseMiddleware<DewBadgeMiddleware>(badgeOptions, signer);
         }
     }

@@ -14,8 +14,8 @@
     <PackageTags>Authorization, aspnetcore, .netcore</PackageTags>
     <PackageIconUrl>http://andrewdev.eu/wp-content/uploads/2016/08/OnlyLogo.png</PackageIconUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>2.0.0</Version>
-    <PackageReleaseNotes>Generic Decode Sign with T</PackageReleaseNotes>
+    <Version>3.0.0</Version>
+    <PackageReleaseNotes>Break Change, now response per badge api respect the standardresponse in the dewtype</PackageReleaseNotes>
     <AssemblyVersion>2.0.0.0</AssemblyVersion>
     <FileVersion>2.0.0.0</FileVersion>
   </PropertyGroup>
@@ -25,10 +25,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="DewStrings" Version="2.0.0" />
+    <PackageReference Include="DewStrings" Version="2.3.0" />
+    <PackageReference Include="DewTypes" Version="1.5.1" />
     <PackageReference Include="jose-jwt" Version="2.4.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Hosting" Version="2.0.2" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.0.3" />
   </ItemGroup>
 
 </Project>
