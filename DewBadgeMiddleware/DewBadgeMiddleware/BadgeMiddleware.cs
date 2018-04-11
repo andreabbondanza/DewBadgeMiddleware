@@ -71,10 +71,17 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public static T GetDewBadge<T>(this HttpContext context) where T : class, IDewBadge, new()
         {
-            var data = context.Items.FirstOrDefault(x => x.Key as string == "DewBadgeSign");
-            var badge = new T();
-            var options = context.GetDewBadgeOptions();
-            return data.Equals(default(KeyValuePair<object, object>)) ? null : badge.DecodeSign<T>(data.Value as string, options.Secret);
+            try
+            {
+                var data = context.Items.FirstOrDefault(x => x.Key as string == "DewBadgeSign");
+                var badge = new T();
+                var options = context.GetDewBadgeOptions();
+                return data.Equals(default(KeyValuePair<object, object>)) ? null : badge.DecodeSign<T>(data.Value as string, options.Secret);
+            }
+            catch
+            {
+                return null;
+            }
         }
 
         /// <summary>
