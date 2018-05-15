@@ -41,9 +41,25 @@ namespace DewCore.AspNetCore.Middlewares
             {
 
             }
-            context.Items.Add("DewBadgeOptions", _bo);
+            try
+            {
+                context.Items.Add("DewBadgeOptions", _bo);
+            }
+            catch
+            {
+                if (_bo.OverWriteMultipleRequest)
+                    context.Items["DewBadgeOptions"] = _bo;
+            }
             string sign = _signReader.GetSign(context);
-            context.Items.Add("DewBadgeSign", sign);
+            try
+            {
+                context.Items.Add("DewBadgeSign", sign);
+            }
+            catch
+            {
+                if (_bo.OverWriteMultipleRequest)
+                    context.Items["DewBadgeSign"] = _bo;
+            }
             await _next(context);
         }
     }

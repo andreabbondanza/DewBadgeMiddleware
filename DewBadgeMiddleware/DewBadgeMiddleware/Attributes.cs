@@ -23,7 +23,7 @@ namespace DewCore.AspNetCore.Middlewares
             var sign = context.HttpContext.GetDewBadgeSign();
             var options = context.HttpContext.GetDewBadgeOptions();
             var badge = context.HttpContext.GetDewBadge<DewBadge>();
-            if (badge == null)
+            if (badge == null || sign == null)
             {
                 badge = new DewBadge() { };
                 badge.ResponseNoAuth(options, context);
@@ -35,7 +35,7 @@ namespace DewCore.AspNetCore.Middlewares
                 {
                     if (!badge.AuthType(_type))
                     {
-                        badge.ResponseNoAuth(options, context);
+                        badge.ResponseOnForbidden(options, context);
                     }
                 }
                 else
@@ -44,7 +44,7 @@ namespace DewCore.AspNetCore.Middlewares
                     {
                         if (!badge.AuthType(_type) || !badge.HasClaims(_claims))
                         {
-                            badge.ResponseNoAuth(options, context);
+                            badge.ResponseOnForbidden(options, context);
                         }
                     }
                     else
@@ -53,7 +53,7 @@ namespace DewCore.AspNetCore.Middlewares
                         {
                             if (!badge.HasClaims(_claims))
                             {
-                                badge.ResponseNoAuth(options, context);
+                                badge.ResponseOnForbidden(options, context);
                             }
                         }
                     }
@@ -118,7 +118,7 @@ namespace DewCore.AspNetCore.Middlewares
             var sign = context.HttpContext.GetDewBadgeSign();
             var options = context.HttpContext.GetDewBadgeOptions();
             var badge = context.HttpContext.GetDewBadge<DewBadgeApi>();
-            if (sign == null)
+            if (sign == null || badge == null)
             {
                 badge = new DewBadgeApi() { };
                 badge.ResponseNoAuth(options, context);
@@ -130,7 +130,7 @@ namespace DewCore.AspNetCore.Middlewares
                 {
                     if (!badge.AuthType(_type))
                     {
-                        badge.ResponseNoAuth(options, context);
+                        badge.ResponseOnForbidden(options, context);
                     }
                 }
                 else
@@ -139,7 +139,7 @@ namespace DewCore.AspNetCore.Middlewares
                     {
                         if (!badge.AuthType(_type) || !badge.HasClaims(_claims))
                         {
-                            badge.ResponseNoAuth(options, context);
+                            badge.ResponseOnForbidden(options, context);
                         }
                     }
                     else
@@ -148,7 +148,7 @@ namespace DewCore.AspNetCore.Middlewares
                         {
                             if (!badge.HasClaims(_claims))
                             {
-                                badge.ResponseNoAuth(options, context);
+                                badge.ResponseOnForbidden(options, context);
                             }
                         }
                     }

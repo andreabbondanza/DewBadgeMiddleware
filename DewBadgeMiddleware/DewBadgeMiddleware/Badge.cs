@@ -22,6 +22,10 @@ namespace DewCore.AspNetCore.Middlewares
         /// Secret key for hash
         /// </summary>
         public string Secret { get; set; } = "carriagenostop";
+        /// <summary>
+        /// Overwrite multiple requests
+        /// </summary>
+        public bool OverWriteMultipleRequest { get; set; } = false;
     }
     /// <summary>
     /// Option class for cookies

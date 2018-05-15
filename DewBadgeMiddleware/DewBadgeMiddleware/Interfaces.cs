@@ -36,7 +36,7 @@ namespace DewCore.Abstract.AspNetCore.Middlewares
         /// <param name="sign"></param>
         /// <param name="secret"></param>
         /// <returns></returns>
-        T DecodeSign<T>(string sign, string secret) where T: class,IDewBadge,new();
+        T DecodeSign<T>(string sign, string secret) where T : class, IDewBadge, new();
         /// <summary>
         /// Check if the badge type match
         /// </summary>
