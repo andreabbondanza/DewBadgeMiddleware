@@ -14,8 +14,8 @@
     <PackageTags>Authorization, aspnetcore, .netcore</PackageTags>
     <PackageIconUrl>http://andrewdev.eu/wp-content/uploads/2016/08/OnlyLogo.png</PackageIconUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>3.0.4</Version>
-    <PackageReleaseNotes>Fixed badge null reference</PackageReleaseNotes>
+    <Version>3.1.0</Version>
+    <PackageReleaseNotes>Added refresh on browsing for cookies</PackageReleaseNotes>
     <AssemblyVersion>2.0.1.0</AssemblyVersion>
     <FileVersion>2.0.1.0</FileVersion>
   </PropertyGroup>

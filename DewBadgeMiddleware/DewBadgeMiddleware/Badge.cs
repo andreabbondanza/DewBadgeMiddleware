@@ -60,6 +60,10 @@ namespace DewCore.AspNetCore.Middlewares
         /// Cookie remember time in minutes from creation
         /// </summary>
         public int CookieRemember { get; set; } = 14400;
+        /// <summary>
+        /// Refresh every time user browse the site
+        /// </summary>
+        public bool RefreshExpireOnBrowse { get; set; } = true;
     }
     /// <summary>
     /// Option class for jwt
@@ -418,6 +422,26 @@ namespace DewCore.AspNetCore.Middlewares
     /// </summary>
     public class DewBadgeSignerCookies : IDewBadgeSigner
     {
+        /// <summary>
+        /// Refresh cookie
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="options"></param>
+        /// <param name="context"></param>
+        /// <param name="badge"></param>
+        /// <param name="tag"></param>
+        public void Refresh<T>(HttpContext context, T options, DewBadge badge, object tag = null) where T : DewBadgeOptionsCookies
+        {
+            if (options is DewBadgeOptionsCookies opt)
+            {
+                var header = context.Request.Cookies.FirstOrDefault(x => { return x.Key == opt.CookieName; });
+                if (!header.Equals(default(KeyValuePair<string, Microsoft.Extensions.Primitives.StringValues>)))
+                {
+                    context.Response.Cookies.Append(opt.CookieName, badge.GetSign(opt.Secret), new CookieOptions() { Expires = DateTime.Now.AddMinutes(opt.CookieExpiring) });
+                }
+            }
+        }
+
         /// <summary>
         /// Get the sign from cookies
         /// </summary>

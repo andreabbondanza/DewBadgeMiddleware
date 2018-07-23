@@ -63,6 +63,9 @@ namespace DewCore.AspNetCore.Middlewares
             {
                 badge.ResponseOnExpired(options, context);
             }
+            var temp = options as DewBadgeOptionsCookies;
+            if (temp.RefreshExpireOnBrowse)
+                new DewBadgeSignerCookies().Refresh<DewBadgeOptionsCookies>(context.HttpContext, temp, badge);
         }
         readonly string _type = null;
         readonly string _claims = null;
