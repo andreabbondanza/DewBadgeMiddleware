@@ -19,6 +19,10 @@ namespace DewCore.AspNetCore.Middlewares
     public class DewBadgeOptions
     {
         /// <summary>
+        /// Set debug mode
+        /// </summary>
+        public bool DEBUG_MODE = false;
+        /// <summary>
         /// Secret key for hash
         /// </summary>
         public string Secret { get; set; } = "carriagenostop";
@@ -94,6 +98,10 @@ namespace DewCore.AspNetCore.Middlewares
         /// Hash algoritm for the sign
         /// </summary>
         public JwsAlgorithm HashSign = JwsAlgorithm.HS256;
+        /// <summary>
+        /// Debug message for errors with debug mode ON
+        /// </summary>
+        public string DebugMessage = null;
 
         private DewBadgeClaims _claims;
         /// <summary>
@@ -511,7 +519,11 @@ namespace DewCore.AspNetCore.Middlewares
                 result = header.Value;
             if (result != null)
             {
-                result = result.Split(' ')[1];
+                if (result.Split(' ').Count() > 1)
+                    result = result.Split(' ')[1];
+                else
+                    result = result.Split(' ')[0];
+
             }
             return result;
         }

@@ -1,4 +1,5 @@
 ﻿using DewCore.Abstract.AspNetCore.Middlewares;
+using Jose;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System;
@@ -22,10 +23,41 @@ namespace DewCore.AspNetCore.Middlewares
             base.OnActionExecuting(context);
             var sign = context.HttpContext.GetDewBadgeSign();
             var options = context.HttpContext.GetDewBadgeOptions();
-            var badge = context.HttpContext.GetDewBadge<DewBadge>();
-            if (badge == null || sign == null)
+            DewBadge badge = null;
+            try
+            {
+                badge = context.HttpContext.GetDewBadge<DewBadge>();
+            }
+            catch (IntegrityException e)
             {
                 badge = new DewBadge() { };
+                if (options.DEBUG_MODE)
+                {
+                    badge.DebugMessage = e.Message;
+                }
+            }
+            catch (EncryptionException e)
+            {
+                badge = new DewBadge() { };
+                if (options.DEBUG_MODE)
+                {
+                    badge.DebugMessage = e.Message;
+                }
+            }
+            catch (InvalidAlgorithmException e)
+            {
+                badge = new DewBadge() { };
+                if (options.DEBUG_MODE)
+                {
+                    badge.DebugMessage = e.Message;
+                }
+            }
+            catch (Exception)
+            {
+                badge = null;
+            }
+            if (badge == null || sign == null)
+            {
                 badge.ResponseNoAuth(options, context);
                 return;
             }
@@ -120,7 +152,39 @@ namespace DewCore.AspNetCore.Middlewares
             base.OnActionExecuting(context);
             var sign = context.HttpContext.GetDewBadgeSign();
             var options = context.HttpContext.GetDewBadgeOptions();
-            var badge = context.HttpContext.GetDewBadge<DewBadgeApi>();
+            DewBadgeApi badge = null;
+            try
+            {
+                badge = context.HttpContext.GetDewBadge<DewBadgeApi>();
+            }
+            catch (IntegrityException e)
+            {
+                badge = new DewBadgeApi() { };
+                if (options.DEBUG_MODE)
+                {
+                    badge.DebugMessage = e.Message;
+                }
+            }
+            catch (EncryptionException e)
+            {
+                badge = new DewBadgeApi() { };
+                if (options.DEBUG_MODE)
+                {
+                    badge.DebugMessage = e.Message;
+                }
+            }
+            catch (InvalidAlgorithmException e)
+            {
+                badge = new DewBadgeApi() { };
+                if (options.DEBUG_MODE)
+                {
+                    badge.DebugMessage = e.Message;
+                }
+            }
+            catch (Exception)
+            {
+                badge = null;
+            }
             if (sign == null || badge == null)
             {
                 badge = new DewBadgeApi() { };

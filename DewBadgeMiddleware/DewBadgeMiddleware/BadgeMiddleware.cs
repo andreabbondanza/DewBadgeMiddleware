@@ -1,4 +1,5 @@
 ﻿using DewCore.Abstract.AspNetCore.Middlewares;
+using Jose;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -85,19 +86,15 @@ namespace DewCore.AspNetCore.Middlewares
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
+        /// <exception cref="IntegrityException">if signature validation failed</exception>
+        /// <exception cref="EncryptionException">if JWT token can't be decrypted</exception>
+        /// <exception cref="InvalidAlgorithmException">if JWT signature, encryption or compression algorithm is not supported</exception>
         public static T GetDewBadge<T>(this HttpContext context) where T : class, IDewBadge, new()
         {
-            try
-            {
-                var data = context.Items.FirstOrDefault(x => x.Key as string == "DewBadgeSign");
-                var badge = new T();
-                var options = context.GetDewBadgeOptions();
-                return data.Equals(default(KeyValuePair<object, object>)) ? null : badge.DecodeSign<T>(data.Value as string, options.Secret);
-            }
-            catch
-            {
-                return null;
-            }
+            var data = context.Items.FirstOrDefault(x => x.Key as string == "DewBadgeSign");
+            var badge = new T();
+            var options = context.GetDewBadgeOptions();
+            return data.Equals(default(KeyValuePair<object, object>)) ? null : badge.DecodeSign<T>(data.Value as string, options.Secret);
         }
 
         /// <summary>

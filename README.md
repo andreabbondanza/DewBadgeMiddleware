@@ -189,7 +189,15 @@ Same thing for SignOut.
 
 __NOTE:__ In the middleware (in startup class) and when you call SignIn/Out methods, you need to pass the same IDewBadgeSignature implementation.
 
+# Debug Mode
+
+With last version (3.2.0) I've added the debug mode. In the startup middleware configuration you can set the __DEBUG_MODE__ into the DewBadgeOptions. 
+
+If set to __true__ when the signature's integrity is invalid, when hash algorithm is invalid or when encryption is invalid you will receive a message into the badge (__DebugMessage__)
+
 ## Note 
+
+From Version 3.2.0 __GetDewBadge\<T\>__ throw Exceptions
 ## NuGet
 You can find it on nuget with the name [DewBadgeMiddleware](https://www.nuget.org/packages/DewBadgeMiddleware)
 ## About
