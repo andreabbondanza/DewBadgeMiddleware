@@ -147,11 +147,21 @@ How you seen in the middleware use, you pass the signature class to middleware (
 
 ```c#
 app.UseBadgeMiddleware<DewBadgeSignerCookies>(new DewBadgeOptionsCookies()
-                                             {
-                                                 CookieName = "mycookielogin",
-                                                 CookieExpiring = DateTime.Now.AddDays(5),
-                                                 RedirectNotAuthorized = "/errors/noauth"
-                                             });
+{
+	CookieName = "mycookielogin",
+	CookieExpiring = DateTime.Now.AddDays(5),
+	RedirectNotAuthorized = "/errors/noauth"
+});
+// OR you can also add an action for supplementary work
+app.UseBadgeMiddleware<DewBadgeSignerCookies>(new DewBadgeOptionsCookies()
+{
+	CookieName = "mycookielogin",
+	CookieExpiring = DateTime.Now.AddDays(5),
+	RedirectNotAuthorized = "/errors/noauth"
+}, context => {
+	// do other stuff
+}
+);
 ```
 
 How you can see, when you call __UseBadgeMiddleware__ you need to pass a type thats implements __IDewBadgeSigner__ interface. Via factory patter the middleware will initialize it and use it.
