@@ -18,6 +18,7 @@ namespace DewCore.AspNetCore.Middlewares
         private readonly RequestDelegate _next;
         private readonly DewBadgeOptions _bo;
         private readonly IDewBadgeSigner _signReader;
+        private readonly Action<HttpContext> _action;
         /// <summary>
         /// Constructor
         /// </summary>
@@ -31,6 +32,20 @@ namespace DewCore.AspNetCore.Middlewares
             _signReader = signReader;
         }
         /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="next">Next middleware</param>
+        /// <param name="bo">options</param>
+        /// <param name="signReader">Table prefix</param>
+        /// <param name="action">action to execute after setted options</param>
+        public DewBadgeMiddleware(RequestDelegate next, DewBadgeOptions bo, IDewBadgeSigner signReader, Action<HttpContext> action)
+        {
+            _next = next;
+            _bo = bo;
+            _signReader = signReader;
+            _action = action;
+        }
+        /// <summary>
         /// Invoke method
         /// </summary>
         /// <param name="context"></param>
@@ -42,25 +57,17 @@ namespace DewCore.AspNetCore.Middlewares
             {
 
             }
-            try
-            {
+            if (context.Items.ContainsKey("DewBadgeOptions") && _bo.OverWriteMultipleRequest)
+                context.Items["DewBadgeOptions"] = _bo;
+            else
                 context.Items.Add("DewBadgeOptions", _bo);
-            }
-            catch
-            {
-                if (_bo.OverWriteMultipleRequest)
-                    context.Items["DewBadgeOptions"] = _bo;
-            }
+
             string sign = _signReader.GetSign(context);
-            try
-            {
+            if (context.Items.ContainsKey("DewBadgeSign") && _bo.OverWriteMultipleRequest)
+                context.Items["DewBadgeSign"] = _bo;
+            else
                 context.Items.Add("DewBadgeSign", sign);
-            }
-            catch
-            {
-                if (_bo.OverWriteMultipleRequest)
-                    context.Items["DewBadgeSign"] = _bo;
-            }
+            _action?.Invoke(context);
             await _next(context);
         }
     }
@@ -167,6 +174,20 @@ namespace DewCore.AspNetCore.Middlewares
             T signer = new T();
             badgeOptions = badgeOptions ?? new DewBadgeOptions();
             return builder.UseMiddleware<DewBadgeMiddleware>(badgeOptions, signer);
+        }
+        /// <summary>
+        /// Builder method
+        /// </summary>
+        /// <param name="builder"></param>
+        /// <param name="badgeOptions">Badge options</param>
+        /// <param name="action">Custom action to do after setted middleware options</param>
+        /// <returns></returns>
+        public static IApplicationBuilder UseBadgeMiddleware<T>(
+           this IApplicationBuilder builder, DewBadgeOptions badgeOptions = null, Action<HttpContext> action = null) where T : class, IDewBadgeSigner, new()
+        {
+            T signer = new T();
+            badgeOptions = badgeOptions ?? new DewBadgeOptions();
+            return builder.UseMiddleware<DewBadgeMiddleware>(badgeOptions, signer, action);
         }
     }
 }
