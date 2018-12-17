@@ -90,10 +90,15 @@ namespace DewCore.AspNetCore.Middlewares
     /// </summary>
     public class DewBadge : IDewBadge
     {
+        private DewBadgeTypes _types;
         /// <summary>
         /// Badge types
         /// </summary>
-        public string Types = null;
+        public DewBadgeTypes Types
+        {
+            get { return _types; }
+            set { _types = value; }
+        }
         /// <summary>
         /// Hash algoritm for the sign
         /// </summary>
@@ -221,23 +226,23 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public virtual bool AuthType(string types)
         {
-            if (Types == null)
-                return false;
             bool result = false;
-            var typesInternal = Types.Split(',');
-            if (types.Contains(","))
+            if (types != null)
             {
-                foreach (var item in Types.Split(','))
+                if (types.Contains(","))
                 {
-                    if (typesInternal.FirstOrDefault(x => x == item) != default(string))
+                    foreach (var item in types.Split(','))
                     {
-                        result = true;
-                        break;
+                        if (Types.FirstOrDefault(x => x == item) != default(string))
+                        {
+                            result = true;
+                            break;
+                        }
                     }
                 }
+                else
+                    result = Types.FirstOrDefault(x => x == types) != default(string);
             }
-            else
-                result = typesInternal.FirstOrDefault(x => x == types) != default(string);
             return result;
         }
         /// <summary>
@@ -248,9 +253,17 @@ namespace DewCore.AspNetCore.Middlewares
         /// Constructor with type
         /// </summary>
         /// <param name="types">Types (separated by comma), es: type or type1,type2,type3</param>
-        public DewBadge(string types)
+        public DewBadge(DewBadgeTypes types)
         {
             Types = types;
+        }
+        /// <summary>
+        /// Constructor with claims
+        /// </summary>
+        /// <param name="claims">Types (separated by comma), es: type or claim1,claim2,claim3</param>
+        public DewBadge(DewBadgeClaims claims)
+        {
+            Claims = claims;
         }
         /// <summary>
         /// Equals
@@ -259,18 +272,25 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public override bool Equals(object obj)
         {
-            var o = obj as DewBadge;
-            if (o == null)
+            if (!(obj is DewBadge o))
                 return false;
-            string result = Types;
+            string result = this.IdUser + "";
+            foreach (var item in _types.OrderBy(x => x))
+            {
+                result += item;
+            }
             foreach (var item in _claims.OrderBy(x => x))
             {
-                result = result + item;
+                result += item;
             }
-            string result1 = o.Types;
+            string result1 = o.IdUser + "";
+            foreach (var item in o._types.OrderBy(x => x))
+            {
+                result += item;
+            }
             foreach (var item in o._claims.OrderBy(x => x))
             {
-                result1 = result1 + item;
+                result += item;
             }
             return result == result1;
         }
@@ -280,7 +300,11 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public override int GetHashCode()
         {
-            string result = Types;
+            string result = IdUser + "";
+            foreach (var item in _types.OrderBy(x => x))
+            {
+                result = result + item;
+            }
             foreach (var item in _claims.OrderBy(x => x))
             {
                 result = result + item;
@@ -422,6 +446,13 @@ namespace DewCore.AspNetCore.Middlewares
     /// Badge claims class
     /// </summary>
     public class DewBadgeClaims : List<string>
+    {
+
+    }
+    /// <summary>
+    /// Badge claims types
+    /// </summary>
+    public class DewBadgeTypes : List<string>
     {
 
     }
