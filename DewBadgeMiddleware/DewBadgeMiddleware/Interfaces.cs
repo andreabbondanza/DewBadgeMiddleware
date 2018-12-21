@@ -14,6 +14,10 @@ namespace DewCore.Abstract.AspNetCore.Middlewares
     public interface IDewBadge
     {
         /// <summary>
+        /// Indicate if output will be capitalized ( { name: "El Carro" } or { Name: "El Carro" })
+        /// </summary>
+        bool CapitalizeOutput { get; set; }
+        /// <summary>
         /// Return true if the badge contains a claim
         /// </summary>
         /// <param name="key"></param>

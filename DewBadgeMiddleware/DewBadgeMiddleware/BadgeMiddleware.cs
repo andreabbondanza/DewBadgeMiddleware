@@ -101,6 +101,7 @@ namespace DewCore.AspNetCore.Middlewares
             var data = context.Items.FirstOrDefault(x => x.Key as string == "DewBadgeSign");
             var badge = new T();
             var options = context.GetDewBadgeOptions();
+            badge.CapitalizeOutput = options.CapitalizeOutput;
             return data.Equals(default(KeyValuePair<object, object>)) ? null : badge.DecodeSign<T>(data.Value as string, options.Secret);
         }
 

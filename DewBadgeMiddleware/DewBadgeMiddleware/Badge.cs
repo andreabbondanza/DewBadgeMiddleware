@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net;
 using DewCore.Types.AspNetCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace DewCore.AspNetCore.Middlewares
 {
@@ -30,6 +32,10 @@ namespace DewCore.AspNetCore.Middlewares
         /// Overwrite multiple requests
         /// </summary>
         public bool OverWriteMultipleRequest { get; set; } = false;
+        /// <summary>
+        /// Indicate if output will be capitalized ( { name: "El Carro" } or { Name: "El Carro" })
+        /// </summary>
+        public bool CapitalizeOutput { get; set; } = true;
     }
     /// <summary>
     /// Option class for cookies
@@ -90,6 +96,10 @@ namespace DewCore.AspNetCore.Middlewares
     /// </summary>
     public class DewBadge : IDewBadge
     {
+        /// <summary>
+        /// Indicate if output will be capitalized ( { name: "El Carro" } or { Name: "El Carro" })
+        /// </summary>
+        public bool CapitalizeOutput { get; set; } = true;
         private DewBadgeTypes _types;
         /// <summary>
         /// Badge types
@@ -102,6 +112,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <summary>
         /// Hash algoritm for the sign
         /// </summary>
+        [JsonIgnore]
         public JwsAlgorithm HashSign = JwsAlgorithm.HS256;
         /// <summary>
         /// Debug message for errors with debug mode ON
@@ -198,7 +209,10 @@ namespace DewCore.AspNetCore.Middlewares
         /// <returns></returns>
         public virtual string GetSign(string secret)
         {
-            string payload = Newtonsoft.Json.JsonConvert.SerializeObject(this);
+            string payload = Newtonsoft.Json.JsonConvert.SerializeObject(this, Formatting.None, new JsonSerializerSettings()
+            {
+                ContractResolver = CapitalizeOutput ? new DefaultContractResolver() : new CamelCasePropertyNamesContractResolver()
+            });
             string token = JWT.Encode(payload, Encoding.ASCII.GetBytes(secret), HashSign);
             return token;
         }
