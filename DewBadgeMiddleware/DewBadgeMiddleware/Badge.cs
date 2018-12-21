@@ -99,6 +99,7 @@ namespace DewCore.AspNetCore.Middlewares
         /// <summary>
         /// Indicate if output will be capitalized ( { name: "El Carro" } or { Name: "El Carro" })
         /// </summary>
+        [JsonIgnore]
         public bool CapitalizeOutput { get; set; } = true;
         private DewBadgeTypes _types;
         /// <summary>
