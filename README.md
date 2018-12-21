@@ -46,6 +46,15 @@ app.UseBadgeMiddleware<DewBadgeSignerCookies>(new DewBadgeOptionsCookies()
                                                  CookieExpiring = DateTime.Now.AddDays(5),
                                                  RedirectNotAuthorized = "/errors/noauth"
                                              });
+// or
+ app.UseBadgeMiddleware<DewBadgeSignerJWT>(new DewBadgeOptionsJWT()
+										{
+											Bearer = "Bearer",
+											HeaderName = "Authorization"
+										}, context =>
+										{
+											// stuff if you want
+										});
 ```
 
 How you can see, when you call __UseBadgeMiddleware__ you need to pass a type that implements __IDewBadgeSigner__ interface. Via factory patter the middleware will initialize it and use it.
@@ -124,6 +133,7 @@ This version has:
 - Expired: property
 - Updated: property
 - Claims: property 
+- Types: property
 
 __NOTE:__ If you want to implement your own Badge class, you __NEED__ to extend DewBadge class, you can't only implement IDewBadge, because the middleware will not work.
 
