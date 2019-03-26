@@ -14,8 +14,8 @@
     <PackageTags>Authorization, aspnetcore, .netcore</PackageTags>
     <PackageIconUrl>http://andrewdev.eu/wp-content/uploads/2016/08/OnlyLogo.png</PackageIconUrl>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <Version>3.5.1</Version>
-    <PackageReleaseNotes>Ability to capitalize or camelize output,</PackageReleaseNotes>
+    <Version>3.5.2</Version>
+    <PackageReleaseNotes>Fixed signin override with multiplerequestoverride</PackageReleaseNotes>
     <AssemblyVersion>3.4.0.0</AssemblyVersion>
     <FileVersion>3.4.0.0</FileVersion>
   </PropertyGroup>

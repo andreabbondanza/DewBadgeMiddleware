@@ -64,7 +64,7 @@ namespace DewCore.AspNetCore.Middlewares
 
             string sign = _signReader.GetSign(context);
             if (context.Items.ContainsKey("DewBadgeSign") && _bo.OverWriteMultipleRequest)
-                context.Items["DewBadgeSign"] = _bo;
+                context.Items["DewBadgeSign"] = sign;
             else
                 context.Items.Add("DewBadgeSign", sign);
             _action?.Invoke(context);
